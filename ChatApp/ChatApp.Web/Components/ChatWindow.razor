@@ -1,0 +1,51 @@
+@* ChatWindow.razor: Main chat area with mock messages *@
+@code {
+    class ChatMessage
+    {
+        public string Sender { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty;
+        public string Time { get; set; } = string.Empty;
+        public bool IsMe { get; set; }
+        public string? ImageUrl { get; set; }
+    }
+
+    List<ChatMessage> messages = new()
+    {
+        new ChatMessage { Sender = "Anna Nowak", Content = "Cześć! Jak się masz?", Time = "2 min", IsMe = false },
+        new ChatMessage { Sender = "Me", Content = "Dobrze, a Ty?", Time = "1 min", IsMe = true },
+        new ChatMessage { Sender = "Anna Nowak", Content = "Wysyłam zdjęcie.", Time = "1 min", IsMe = false },
+        new ChatMessage { Sender = "Anna Nowak", Content = "", Time = "1 min", IsMe = false, ImageUrl = "/images/sample-photo.jpg" },
+        new ChatMessage { Sender = "Me", Content = "Super!", Time = "just now", IsMe = true }
+    };
+}
+
+<div class="chat-window">
+    <div class="chat-header">
+        <div class="chat-header__info">
+            <div class="avatar">
+                <img src="/images/avatar-placeholder.png" alt="User avatar" />
+            </div>
+            <div class="user-info">
+                <div class="user-info__name">Anna Nowak</div>
+                <div class="user-info__status">Aktywny 2 min temu</div>
+            </div>
+        </div>
+    </div>
+    <div class="chat-messages">
+        @foreach (var msg in messages)
+        {
+            <div class="chat-message @(msg.IsMe ? "chat-message--me" : "chat-message--other")">
+                @if (!string.IsNullOrEmpty(msg.ImageUrl))
+                {
+                    <img src="@msg.ImageUrl" alt="Attachment" class="chat-message__image" />
+                }
+                @if (!string.IsNullOrEmpty(msg.Content))
+                {
+                    <div class="chat-message__bubble">@msg.Content</div>
+                }
+                <div class="chat-message__time">@msg.Time</div>
+            </div>
+        }
+    </div>
+    <MessageInput />
+</div> 

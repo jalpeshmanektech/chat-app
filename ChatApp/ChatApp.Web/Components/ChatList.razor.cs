@@ -1,0 +1,24 @@
+using Microsoft.AspNetCore.Components;
+
+namespace ChatApp.Web.Components;
+
+public partial class ChatList : ComponentBase
+{
+    class ChatUser
+    {
+        public string Name { get; set; } = string.Empty;
+        public string LastMessage { get; set; } = string.Empty;
+        public string TimeAgo { get; set; } = string.Empty;
+        public string AvatarUrl { get; set; } = "/images/avatar-placeholder.png";
+        public bool IsOnline { get; set; }
+    }
+
+    protected List<ChatUser> users = new()
+    {
+        new ChatUser { Name = "Anna Nowak", LastMessage = "Cześć! Jak się masz?", TimeAgo = "2 min", IsOnline = true },
+        new ChatUser { Name = "Jan Kowalski", LastMessage = "Do zobaczenia jutro!", TimeAgo = "10 min", IsOnline = false },
+        new ChatUser { Name = "Maria Wiśniewska", LastMessage = "Dziękuję!", TimeAgo = "30 min", IsOnline = true },
+        new ChatUser { Name = "Piotr Zieliński", LastMessage = "Wysyłam plik.", TimeAgo = "1 godz", IsOnline = false },
+        new ChatUser { Name = "Kasia Lewandowska", LastMessage = "😂😂😂", TimeAgo = "2 godz", IsOnline = true }
+    };
+} 

@@ -1,0 +1,50 @@
+// Custom Scrollbar Mixin
+@mixin custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $background-dark;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $border-color;
+    border-radius: 3px;
+    
+    &:hover {
+      background: lighten($border-color, 10%);
+    }
+  }
+}
+
+// Flex Center Mixin
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Text Ellipsis Mixin
+@mixin text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// Message Bubble Mixin
+@mixin message-bubble($is-sender: false) {
+  background: $message-bubble;
+  border-radius: 12px;
+  padding: 10px 15px;
+  max-width: 70%;
+  
+  @if $is-sender {
+    border-bottom-right-radius: 4px;
+    align-self: flex-end;
+  } @else {
+    border-bottom-left-radius: 4px;
+    align-self: flex-start;
+  }
+} 

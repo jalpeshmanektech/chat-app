@@ -1,0 +1,100 @@
+@import '../variables/colors';
+@import '../mixins/scrollbar';
+
+.chat-list {
+  width: 300px;
+  height: 100%;
+  background: $sidebar-background;
+  border-right: 1px solid $border-color;
+  overflow-y: auto;
+  @include custom-scrollbar;
+
+  &__header {
+    padding: 20px;
+    border-bottom: 1px solid $border-color;
+    
+    .search-box {
+      background: $search-background;
+      border-radius: 20px;
+      padding: 8px 15px;
+      display: flex;
+      align-items: center;
+      
+      input {
+        background: none;
+        border: none;
+        color: $text-color;
+        width: 100%;
+        outline: none;
+        
+        &::placeholder {
+          color: $text-secondary;
+        }
+      }
+    }
+  }
+
+  &__item {
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+    
+    &:hover {
+      background: $hover-color;
+    }
+    
+    &--active {
+      background: $hover-color;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      position: relative;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      
+      &__status {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: $online-status;
+        border: 2px solid $sidebar-background;
+      }
+    }
+
+    .chat-info {
+      flex: 1;
+      @include text-ellipsis;
+      
+      &__name {
+        color: $text-color;
+        font-weight: 500;
+        margin-bottom: 4px;
+      }
+      
+      &__last-message {
+        color: $text-secondary;
+        font-size: 0.9em;
+        @include text-ellipsis;
+      }
+      
+      &__time {
+        color: $text-secondary;
+        font-size: 0.8em;
+      }
+    }
+  }
+} 

@@ -1,0 +1,23 @@
+@* ChatListItem.razor: Single chat/user preview with parameters *@
+@code {
+    [Parameter] public string Name { get; set; } = string.Empty;
+    [Parameter] public string LastMessage { get; set; } = string.Empty;
+    [Parameter] public string TimeAgo { get; set; } = string.Empty;
+    [Parameter] public string AvatarUrl { get; set; } = "/images/avatar-placeholder.png";
+    [Parameter] public bool IsOnline { get; set; }
+}
+
+<div class="chat-list__item">
+    <div class="avatar">
+        <img src="@AvatarUrl" alt="User avatar" />
+        @if (IsOnline)
+        {
+            <span class="avatar__status"></span>
+        }
+    </div>
+    <div class="chat-info">
+        <div class="chat-info__name">@Name</div>
+        <div class="chat-info__last-message">@LastMessage</div>
+        <div class="chat-info__time">@TimeAgo</div>
+    </div>
+</div> 
