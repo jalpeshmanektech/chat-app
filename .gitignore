@@ -4,3 +4,6 @@
 
 /.vs
 /ChatApp/.vs/ChatApp/v17
+/ChatApp/.vs
+/ChatApp/ChatApp.Web/bin/Debug/net8.0
+/ChatApp/ChatApp.Web/obj
