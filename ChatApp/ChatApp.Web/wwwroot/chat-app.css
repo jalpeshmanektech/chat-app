@@ -32,6 +32,23 @@ html, body {
   height: 100%;
 }
 
+.logout-btn {
+     margin-top: 16px;
+     padding: 8px 16px;
+     background: #222;
+     color: #fff;
+     border: none;
+     border-radius: 6px;
+     cursor: pointer;
+     width: 100%;
+     transition: background 0.2s;
+}
+
+     .logout-btn:hover {
+          background: #d32f2f;
+          color: #fff;
+     }
+
 /* ===== GLOBAL STYLES ===== */
 button {
   font-family: inherit;

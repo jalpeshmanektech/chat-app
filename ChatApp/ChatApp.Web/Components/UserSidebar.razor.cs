@@ -4,5 +4,11 @@ namespace ChatApp.Web.Components;
 
 public partial class UserSidebar : ComponentBase
 {
-    // Logic for user sidebar will go here
+     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+
+     private async Task Logout()
+     {
+          // Redirect to the built-in logout endpoint
+          NavigationManager.NavigateTo("/account/logout", forceLoad: true);
+     }
 } 
