@@ -32,22 +32,6 @@ html, body {
   height: 100%;
 }
 
-.logout-btn {
-     margin-top: 16px;
-     padding: 8px 16px;
-     background: #222;
-     color: #fff;
-     border: none;
-     border-radius: 6px;
-     cursor: pointer;
-     width: 100%;
-     transition: background 0.2s;
-}
-
-     .logout-btn:hover {
-          background: #d32f2f;
-          color: #fff;
-     }
 
 /* ===== GLOBAL STYLES ===== */
 button {
@@ -473,7 +457,7 @@ input:focus, textarea:focus {
 }
 
 /* ===== USER SIDEBAR STYLES ===== */
-.user-sidebar {
+/*.user-sidebar {
   width: 300px;
   background: var(--sidebar-background);
   border-left: 1px solid var(--border-color);
@@ -555,7 +539,77 @@ input:focus, textarea:focus {
   color: var(--text-secondary);
   font-size: 0.9em;
 }
+*/
 
+.user-sidebar {
+     background: #181818;
+     color: #fff;
+     padding: 24px 16px;
+     min-width: 220px;
+     max-width: 300px;
+     height: 100vh;
+     box-shadow: 2px 0 8px rgba(0,0,0,0.08);
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+}
+
+.user-profile {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     margin-bottom: 24px;
+}
+
+     .user-profile img {
+          width: 72px;
+          height: 72px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 2px solid #2d88ff;
+          margin-bottom: 12px;
+          background: #222;
+     }
+
+.user-profile__name {
+     font-size: 1.2rem;
+     font-weight: 600;
+     margin-bottom: 4px;
+}
+
+.user-profile__status {
+     font-size: 0.95rem;
+     color: #7ee787;
+     margin-bottom: 8px;
+     text-align: center;
+}
+
+.user-search input {
+     width: 100%;
+     padding: 8px 12px;
+     border-radius: 6px;
+     border: none;
+     background: #222;
+     color: #fff;
+     margin-bottom: 16px;
+}
+
+.logout-btn {
+     margin-top: 24px;
+     padding: 10px 0;
+     width: 100%;
+     background: #2d88ff;
+     color: #fff;
+     border: none;
+     border-radius: 6px;
+     font-weight: 600;
+     cursor: pointer;
+     transition: background 0.2s;
+}
+
+     .logout-btn:hover {
+          background: #1a5fb4;
+     }
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
   .chat-app__sidebar {
