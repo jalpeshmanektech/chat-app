@@ -4,7 +4,7 @@ namespace ChatApp.Web.Components;
 
 public partial class ChatList : ComponentBase
 {
-    class ChatUser
+    public class ChatUser
     {
         public string Name { get; set; } = string.Empty;
         public string LastMessage { get; set; } = string.Empty;
