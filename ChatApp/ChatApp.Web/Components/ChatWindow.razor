@@ -50,7 +50,7 @@
                         </div>
                     }
                     <div class="message__content">
-                        <div class="message-bubble @(msg.Sender == CurrentUser ? "message-bubble--sender" : "")">
+                        <div class="message-bubble">
                             @if (!string.IsNullOrEmpty(msg.ImageUrl))
                             {
                                 <img src="@msg.ImageUrl" alt="Attachment" class="message__image" />
