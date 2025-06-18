@@ -38,6 +38,30 @@ button {
   font-family: inherit;
 }
 
+.logout-btn {
+     margin-top: 20px;
+     padding: 10px 0;
+     width: 100%;
+     background: #2d88ff;
+     color: #fff;
+     border: none;
+     border-radius: 6px;
+     font-weight: 600;
+     font-size: 1rem;
+     cursor: pointer;
+     box-shadow: 0 2px 8px rgba(45,136,255,0.08);
+     transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+     letter-spacing: 0.5px;
+}
+
+     .logout-btn:hover, .logout-btn:focus {
+          background: #1a5fb4;
+          color: #fff;
+          box-shadow: 0 4px 16px rgba(45,136,255,0.15);
+          outline: none;
+     }
+
+
 input, textarea {
   font-family: inherit;
 }
@@ -594,22 +618,6 @@ input:focus, textarea:focus {
      margin-bottom: 16px;
 }
 
-.logout-btn {
-     margin-top: 24px;
-     padding: 10px 0;
-     width: 100%;
-     background: #2d88ff;
-     color: #fff;
-     border: none;
-     border-radius: 6px;
-     font-weight: 600;
-     cursor: pointer;
-     transition: background 0.2s;
-}
-
-     .logout-btn:hover {
-          background: #1a5fb4;
-     }
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
   .chat-app__sidebar {
