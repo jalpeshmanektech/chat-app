@@ -340,12 +340,10 @@ input:focus, textarea:focus {
 }
 
 .chat-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  width: 100%;
 }
 
 .chat-messages::-webkit-scrollbar {
@@ -367,9 +365,16 @@ input:focus, textarea:focus {
 }
 
 .message {
+  width: 100%;
   display: flex;
-  gap: 10px;
-  align-items: flex-end;
+}
+
+.message.sent {
+  justify-content: flex-end;
+}
+
+.message.received {
+  justify-content: flex-start;
 }
 
 .message__avatar {
