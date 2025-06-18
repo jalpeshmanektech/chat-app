@@ -1,14 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="chat-app">
-    <ChatList />
-    <div class="chat-app__main">
-        <ChatWindow CurrentUser="@CurrentUser" CurrentChatUser="@CurrentChatUser" IsOnline="true" />
-    </div>
-    <div class="chat-app__sidebar">
-        <UserSidebar />
-    </div>
-
+    @Body
 </div>
 
 <div id="blazor-error-ui">
@@ -16,8 +9,3 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
-
-@code {
-    private string CurrentUser { get; set; } = "Me";
-    private string CurrentChatUser { get; set; } = "Anna Nowak";
-}

@@ -1,7 +1,19 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Chat App</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="chat-app">
+    <ChatList />
+    <div class="chat-app__main">
+        <ChatWindow CurrentUser="@CurrentUser" CurrentChatUser="@CurrentChatUser" IsOnline="true" />
+    </div>
+    <div class="chat-app__sidebar">
+        <UserSidebar />
+    </div>
+</div>
 
-Welcome to your new app.
+@code {
+    private string CurrentUser { get; set; } = "Me";
+    private string CurrentChatUser { get; set; } = "Anna Nowak";
+}

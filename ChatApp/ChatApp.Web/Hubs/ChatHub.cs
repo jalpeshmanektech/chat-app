@@ -8,7 +8,6 @@ public class ChatHub : Hub
 
      private readonly ApplicationDbContext _db;
      private static readonly Dictionary<string, string> _userConnections = new();
-     private static readonly List<ChatMessage> _messages = new();
 
      public ChatHub(ApplicationDbContext db)
      {
@@ -17,7 +16,7 @@ public class ChatHub : Hub
 
      public async Task SendMessage(string sender, string receiver, string message)
      {
-          var chatMessage = new Message
+          var dbMessage = new Message
           {
                SenderId = sender,
                ReceiverId = receiver,
@@ -25,8 +24,22 @@ public class ChatHub : Hub
                Timestamp = DateTime.UtcNow,
                IsRead = false
           };
-          _db.Messages.Add(chatMessage);
+          _db.Messages.Add(dbMessage);
           await _db.SaveChangesAsync();
+
+          // Convert to ChatMessage for SignalR
+          var chatMessage = new ChatMessage
+          {
+               Id = dbMessage.Id.ToString(),
+               Sender = dbMessage.SenderId,
+               Receiver = dbMessage.ReceiverId,
+               Content = dbMessage.Content,
+               Timestamp = dbMessage.Timestamp,
+               IsRead = dbMessage.IsRead,
+               ImageUrl = dbMessage.ImageUrl,
+               FileUrl = dbMessage.FileUrl,
+               FileName = dbMessage.FileName
+          };
 
           // Send to specific user if they're online
           if (_userConnections.TryGetValue(receiver, out var connectionId))
@@ -40,14 +53,32 @@ public class ChatHub : Hub
 
      public async Task JoinChat(string username)
      {
-
           _userConnections[username] = Context.ConnectionId;
           await Clients.All.SendAsync("UserJoined", username);
 
           // Send recent messages to the user
-          var recentMessages = _db.Messages.Where(m => m.SenderId == username || m.ReceiverId == username)
-               .OrderByDescending(m => m.Timestamp).Take(50).ToList();
-          await Clients.Caller.SendAsync("LoadMessages", recentMessages);
+          var recentDbMessages = _db.Messages
+               .Where(m => m.SenderId == username || m.ReceiverId == username)
+               .OrderByDescending(m => m.Timestamp)
+               .Take(50)
+               .Reverse()
+               .ToList();
+
+          // Convert to ChatMessage for SignalR
+          var chatMessages = recentDbMessages.Select(m => new ChatMessage
+          {
+               Id = m.Id.ToString(),
+               Sender = m.SenderId,
+               Receiver = m.ReceiverId,
+               Content = m.Content,
+               Timestamp = m.Timestamp,
+               IsRead = m.IsRead,
+               ImageUrl = m.ImageUrl,
+               FileUrl = m.FileUrl,
+               FileName = m.FileName
+          }).ToList();
+
+          await Clients.Caller.SendAsync("LoadMessages", chatMessages);
      }
 
      public async Task LeaveChat(string username)
@@ -74,11 +105,15 @@ public class ChatHub : Hub
 
      public async Task MarkAsRead(string messageId, string username)
      {
-          var message = _messages.FirstOrDefault(m => m.Id == messageId);
-          if (message != null && message.Receiver == username)
+          if (int.TryParse(messageId, out var id))
           {
-               message.IsRead = true;
-               await Clients.Caller.SendAsync("MessageRead", messageId);
+               var message = _db.Messages.FirstOrDefault(m => m.Id == id);
+               if (message != null && message.ReceiverId == username)
+               {
+                    message.IsRead = true;
+                    await _db.SaveChangesAsync();
+                    await Clients.Caller.SendAsync("MessageRead", messageId);
+               }
           }
      }
 
