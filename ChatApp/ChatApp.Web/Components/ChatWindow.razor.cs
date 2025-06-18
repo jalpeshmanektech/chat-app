@@ -2,6 +2,7 @@ using ChatApp.Web.Hubs;
 using ChatApp.Web.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace ChatApp.Web.Components;
 
@@ -10,7 +11,8 @@ public partial class ChatWindow : ComponentBase
      [Inject] private ChatService ChatService { get; set; } = default!;
      [Inject] private IJSRuntime JS { get; set; } = default!;
      [Inject] private NavigationManager Navigation { get; set; } = default!;
-     [Parameter] public string CurrentUser { get; set; } = "Me";
+     [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+     [Parameter] public string CurrentUser { get; set; } = null!;
      [Parameter] public string CurrentChatUser { get; set; } = "Anna Nowak";
      [Parameter] public bool IsOnline { get; set; } = true;
 
@@ -20,6 +22,17 @@ public partial class ChatWindow : ComponentBase
 
      protected override async Task OnInitializedAsync()
      {
+          var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+          var user = authState.User;
+          if (user.Identity?.IsAuthenticated == true)
+          {
+               CurrentUser = user.Identity.Name ?? "Unknown";
+          }
+          else
+          {
+               CurrentUser = "Unknown";
+          }
+
           Console.WriteLine("ChatWindow initialized");
           Console.WriteLine($"CurrentUser: {CurrentUser}");
           Console.WriteLine($"CurrentChatUser: {CurrentChatUser}");

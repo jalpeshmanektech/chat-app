@@ -3,15 +3,25 @@
 
 <PageTitle>Chat App</PageTitle>
 
-<div class="chat-app">
-    <ChatList />
-    <div class="chat-app__main">
-        <ChatWindow CurrentUser="@CurrentUser" CurrentChatUser="@CurrentChatUser" IsOnline="true" />
-    </div>
-    <div class="chat-app__sidebar">
-        <UserSidebar />
-    </div>
-</div>
+<AuthorizeView>
+    <Authorized>
+        <div class="chat-app">
+            <ChatList />
+            <div class="chat-app__main">
+                <ChatWindow CurrentUser="@CurrentUser" CurrentChatUser="@CurrentChatUser" IsOnline="true" />
+            </div>
+            <div class="chat-app__sidebar">
+                <UserSidebar />
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="login-prompt">
+            <h3>You must be logged in to use the chat.</h3>
+            <a href="/account/login">Go to Login</a>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private string CurrentUser { get; set; } = "Me";
