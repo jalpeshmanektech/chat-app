@@ -61,23 +61,46 @@ public partial class ChatWindow : ComponentBase
 
      private async void OnMessageReceived(ChatMessage message)
      {
+          Console.WriteLine($"OnMessageReceived called: {message.Sender} -> {message.Receiver}: {message.Content}");
+          Console.WriteLine($"Message ID: {message.Id}");
+          Console.WriteLine($"Current Messages count: {Messages.Count}");
+          
           if ((message.Sender == CurrentUser && message.Receiver == CurrentChatUser) ||
               (message.Sender == CurrentChatUser && message.Receiver == CurrentUser))
           {
                await InvokeAsync(() =>
                {
                     Messages.Add(message);
+                    Console.WriteLine($"Message added to list. New count: {Messages.Count}");
                     StateHasChanged();
                     ScrollToBottom();
                });
+          }
+          else
+          {
+               Console.WriteLine("Message filtered out - not for current chat");
           }
      }
 
      private async void OnMessageSent(ChatMessage message)
      {
-          // Message was sent successfully
+          Console.WriteLine($"OnMessageSent called: {message.Sender} -> {message.Receiver}: {message.Content}");
+          Console.WriteLine($"Message ID: {message.Id}");
+          Console.WriteLine($"Current Messages count: {Messages.Count}");
+          
+          // Message was sent successfully - add it to the local messages list
           await InvokeAsync(() =>
           {
+               // Only add if it's not already in the list (to avoid duplicates)
+               if (!Messages.Any(m => m.Id == message.Id))
+               {
+                    Messages.Add(message);
+                    Console.WriteLine($"Message added to list. New count: {Messages.Count}");
+               }
+               else
+               {
+                    Console.WriteLine("Message already exists in list, skipping");
+               }
                StateHasChanged();
                ScrollToBottom();
           });
@@ -85,12 +108,19 @@ public partial class ChatWindow : ComponentBase
 
      private async void OnMessagesLoaded(List<ChatMessage> messages)
      {
+          Console.WriteLine($"OnMessagesLoaded called with {messages.Count} messages");
+          Console.WriteLine($"CurrentUser: {CurrentUser}, CurrentChatUser: {CurrentChatUser}");
+          
           await InvokeAsync(() =>
           {
-               Messages = messages.Where(m =>
+               var filteredMessages = messages.Where(m =>
                    (m.Sender == CurrentUser && m.Receiver == CurrentChatUser) ||
                    (m.Sender == CurrentChatUser && m.Receiver == CurrentUser)
                ).ToList();
+               
+               Console.WriteLine($"Filtered to {filteredMessages.Count} messages for current chat");
+               
+               Messages = filteredMessages;
                StateHasChanged();
                ScrollToBottom();
           });
