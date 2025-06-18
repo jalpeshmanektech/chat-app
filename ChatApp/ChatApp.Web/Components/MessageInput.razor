@@ -1,7 +1,3 @@
-@* MessageInput.razor: Message input and actions *@
-@using ChatApp.Web.Services
-@inject ChatService ChatService
-
 <div class="message-input">
     <div class="message-input__container">
         <div class="message-input__actions">
@@ -23,118 +19,30 @@
         </div>
         
         <div class="message-input__field-container">
-            <textarea 
-                @bind="MessageText" 
-                @bind:event="oninput"
-                @onkeydown="OnKeyDown"
-                @onkeyup="OnKeyUp"
-                placeholder="Type a message..." 
-                class="message-input__field"
-                rows="1"
-                @ref="messageInput">
-            </textarea>
+               <textarea @bind="@MessageText"
+                         @bind:event="oninput"
+                         @onkeydown="OnKeyDown"
+                         @onkeyup="OnKeyUp"
+                         placeholder="Type a message..."
+                         class="message-input__field"
+                         rows="1"
+                         @ref="messageInput">
+               </textarea>
         </div>
         
         <div class="message-input__actions">
             <button title="Emoji" class="message-input__action">
                 <span>😊</span>
             </button>
+           
+
             <button 
                 title="Send" 
                 class="message-input__send"
                 @onclick="SendMessage"
-                disabled="@(string.IsNullOrWhiteSpace(MessageText))">
+                disabled="@string.IsNullOrWhiteSpace(MessageText?.Trim())">
                 <span>➡️</span>
             </button>
         </div>
     </div>
 </div>
-
-@code {
-    [Parameter] public Func<string, Task>? OnSendMessage { get; set; }
-    [Parameter] public Func<Task>? OnTyping { get; set; }
-    [Parameter] public Func<Task>? OnStopTyping { get; set; }
-    
-    private string MessageText { get; set; } = string.Empty;
-    private ElementReference messageInput;
-    private Timer? typingTimer;
-    
-    private async Task SendMessage()
-    {
-        if (!string.IsNullOrWhiteSpace(MessageText))
-        {
-            var message = MessageText.Trim();
-            MessageText = string.Empty;
-            
-            if (OnSendMessage != null)
-            {
-                await OnSendMessage(message);
-            }
-            
-            await StopTypingIndicator();
-            await AutoResizeTextarea();
-        }
-    }
-    
-    private async Task OnKeyDown(KeyboardEventArgs e)
-    {
-        if (e.Key == "Enter" && !e.ShiftKey)
-        {
-            e.PreventDefault();
-            await SendMessage();
-        }
-    }
-    
-    private async Task OnKeyUp(KeyboardEventArgs e)
-    {
-        await StartTypingIndicator();
-        await AutoResizeTextarea();
-    }
-    
-    private async Task StartTypingIndicator()
-    {
-        if (OnTyping != null)
-        {
-            await OnTyping();
-        }
-        
-        // Reset typing timer
-        typingTimer?.Dispose();
-        typingTimer = new Timer(async _ =>
-        {
-            await InvokeAsync(async () =>
-            {
-                await StopTypingIndicator();
-                StateHasChanged();
-            });
-        }, null, 2000, Timeout.Infinite);
-    }
-    
-    private async Task StopTypingIndicator()
-    {
-        typingTimer?.Dispose();
-        typingTimer = null;
-        
-        if (OnStopTyping != null)
-        {
-            await OnStopTyping();
-        }
-    }
-    
-    private async Task AutoResizeTextarea()
-    {
-        try
-        {
-            await JS.InvokeVoidAsync("autoResizeTextarea", messageInput);
-        }
-        catch
-        {
-            // Ignore JS errors
-        }
-    }
-    
-    public void Dispose()
-    {
-        typingTimer?.Dispose();
-    }
-} 

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.SignalR.Client;
 using ChatApp.Web.Hubs;
+using Microsoft.AspNetCore.Components;
 
 namespace ChatApp.Web.Services;
 
@@ -8,7 +9,6 @@ public class ChatService : IAsyncDisposable
     private HubConnection? _hubConnection;
     private readonly ILogger<ChatService> _logger;
     private readonly NavigationManager _navigationManager;
-
     public event Action<ChatMessage>? MessageReceived;
     public event Action<ChatMessage>? MessageSent;
     public event Action<string>? UserJoined;
