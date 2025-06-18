@@ -1,23 +1,8 @@
-@* ChatWindow.razor: Main chat area with mock messages *@
-@code {
-    class ChatMessage
-    {
-        public string Sender { get; set; } = string.Empty;
-        public string Content { get; set; } = string.Empty;
-        public string Time { get; set; } = string.Empty;
-        public bool IsMe { get; set; }
-        public string? ImageUrl { get; set; }
-    }
-
-    List<ChatMessage> messages = new()
-    {
-        new ChatMessage { Sender = "Anna Nowak", Content = "Cześć! Jak się masz?", Time = "2 min", IsMe = false },
-        new ChatMessage { Sender = "Me", Content = "Dobrze, a Ty?", Time = "1 min", IsMe = true },
-        new ChatMessage { Sender = "Anna Nowak", Content = "Wysyłam zdjęcie.", Time = "1 min", IsMe = false },
-        new ChatMessage { Sender = "Anna Nowak", Content = "", Time = "1 min", IsMe = false, ImageUrl = "/images/sample-photo.jpg" },
-        new ChatMessage { Sender = "Me", Content = "Super!", Time = "just now", IsMe = true }
-    };
-}
+@using ChatApp.Web.Hubs
+@using ChatApp.Web.Services
+@inject ChatService ChatService
+@inject NavigationManager Navigation
+@implements IAsyncDisposable
 
 <div class="chat-window">
     <div class="chat-header">
@@ -26,26 +11,195 @@
                 <img src="/images/avatar-placeholder.png" alt="User avatar" />
             </div>
             <div class="user-info">
-                <div class="user-info__name">Anna Nowak</div>
-                <div class="user-info__status">Aktywny 2 min temu</div>
+                <div class="user-info__name">@CurrentChatUser</div>
+                <div class="user-info__status">
+                    @if (IsTyping)
+                    {
+                        <span class="text-primary">Typing...</span>
+                    }
+                    else if (IsOnline)
+                    {
+                        <span class="text-success">Online</span>
+                    }
+                    else
+                    {
+                        <span class="text-secondary">Offline</span>
+                    }
+                </div>
             </div>
         </div>
     </div>
-    <div class="chat-messages">
-        @foreach (var msg in messages)
+    
+    <div class="chat-messages" @ref="messagesContainer">
+        @if (Messages.Count == 0)
         {
-            <div class="chat-message @(msg.IsMe ? "chat-message--me" : "chat-message--other")">
-                @if (!string.IsNullOrEmpty(msg.ImageUrl))
-                {
-                    <img src="@msg.ImageUrl" alt="Attachment" class="chat-message__image" />
-                }
-                @if (!string.IsNullOrEmpty(msg.Content))
-                {
-                    <div class="chat-message__bubble">@msg.Content</div>
-                }
-                <div class="chat-message__time">@msg.Time</div>
+            <div class="empty-state">
+                <div class="empty-state-icon">💬</div>
+                <div class="empty-state-title">No messages yet</div>
+                <div class="empty-state-description">Start a conversation by sending a message!</div>
             </div>
         }
+        else
+        {
+            @foreach (var msg in Messages)
+            {
+                <div class="message @(msg.Sender == CurrentUser ? "sent" : "received")">
+                    @if (msg.Sender != CurrentUser)
+                    {
+                        <div class="message__avatar">
+                            <img src="/images/avatar-placeholder.png" alt="Avatar" />
+                        </div>
+                    }
+                    <div class="message__content">
+                        <div class="message-bubble @(msg.Sender == CurrentUser ? "message-bubble--sender" : "")">
+                            @if (!string.IsNullOrEmpty(msg.ImageUrl))
+                            {
+                                <img src="@msg.ImageUrl" alt="Attachment" class="message__image" />
+                            }
+                            @if (!string.IsNullOrEmpty(msg.Content))
+                            {
+                                <div>@msg.Content</div>
+                            }
+                        </div>
+                        <div class="message__time">
+                            @msg.Timestamp.ToString("HH:mm")
+                            @if (msg.Sender == CurrentUser)
+                            {
+                                <span class="message__status">
+                                    @if (msg.IsRead)
+                                    {
+                                        <span class="text-primary">✓✓</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-secondary">✓</span>
+                                    }
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
     </div>
-    <MessageInput />
-</div> 
+    
+    <MessageInput OnSendMessage="SendMessage" OnTyping="OnTyping" OnStopTyping="OnStopTyping" />
+</div>
+
+@code {
+    [Parameter] public string CurrentUser { get; set; } = "Me";
+    [Parameter] public string CurrentChatUser { get; set; } = "Anna Nowak";
+    [Parameter] public bool IsOnline { get; set; } = true;
+    
+    private List<ChatMessage> Messages { get; set; } = new();
+    private bool IsTyping { get; set; } = false;
+    private ElementReference messagesContainer;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        // Subscribe to chat events
+        ChatService.MessageReceived += OnMessageReceived;
+        ChatService.MessageSent += OnMessageSent;
+        ChatService.MessagesLoaded += OnMessagesLoaded;
+        ChatService.UserTyping += OnUserTyping;
+        ChatService.UserStoppedTyping += OnUserStoppedTyping;
+        
+        // Start SignalR connection
+        await ChatService.StartAsync();
+        
+        // Join chat
+        await ChatService.JoinChatAsync(CurrentUser);
+    }
+    
+    private async Task SendMessage(string message)
+    {
+        if (!string.IsNullOrWhiteSpace(message))
+        {
+            await ChatService.SendMessageAsync(CurrentUser, CurrentChatUser, message);
+        }
+    }
+    
+    private async Task OnTyping()
+    {
+        await ChatService.TypingAsync(CurrentUser, CurrentChatUser);
+    }
+    
+    private async Task OnStopTyping()
+    {
+        await ChatService.StopTypingAsync(CurrentUser, CurrentChatUser);
+    }
+    
+    private void OnMessageReceived(ChatMessage message)
+    {
+        if ((message.Sender == CurrentUser && message.Receiver == CurrentChatUser) ||
+            (message.Sender == CurrentChatUser && message.Receiver == CurrentUser))
+        {
+            Messages.Add(message);
+            StateHasChanged();
+            ScrollToBottom();
+        }
+    }
+    
+    private void OnMessageSent(ChatMessage message)
+    {
+        // Message was sent successfully
+        StateHasChanged();
+        ScrollToBottom();
+    }
+    
+    private void OnMessagesLoaded(List<ChatMessage> messages)
+    {
+        Messages = messages.Where(m => 
+            (m.Sender == CurrentUser && m.Receiver == CurrentChatUser) ||
+            (m.Sender == CurrentChatUser && m.Receiver == CurrentUser)
+        ).ToList();
+        StateHasChanged();
+        ScrollToBottom();
+    }
+    
+    private void OnUserTyping(string username)
+    {
+        if (username == CurrentChatUser)
+        {
+            IsTyping = true;
+            StateHasChanged();
+        }
+    }
+    
+    private void OnUserStoppedTyping(string username)
+    {
+        if (username == CurrentChatUser)
+        {
+            IsTyping = false;
+            StateHasChanged();
+        }
+    }
+    
+    private async Task ScrollToBottom()
+    {
+        await Task.Delay(100); // Small delay to ensure DOM is updated
+        try
+        {
+            await JS.InvokeVoidAsync("scrollToBottom", messagesContainer);
+        }
+        catch
+        {
+            // Ignore JS errors
+        }
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        // Unsubscribe from events
+        ChatService.MessageReceived -= OnMessageReceived;
+        ChatService.MessageSent -= OnMessageSent;
+        ChatService.MessagesLoaded -= OnMessagesLoaded;
+        ChatService.UserTyping -= OnUserTyping;
+        ChatService.UserStoppedTyping -= OnUserStoppedTyping;
+        
+        // Leave chat
+        await ChatService.LeaveChatAsync(CurrentUser);
+        
+        await ChatService.DisposeAsync();
+    }
+} 

@@ -1,6 +1,8 @@
 using ChatApp.Web.Components;
 using ChatApp.Web.Components.Account;
 using ChatApp.Web.Data;
+using ChatApp.Web.Hubs;
+using ChatApp.Web.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// Add SignalR
+builder.Services.AddSignalR();
+
+// Add Chat Service
+builder.Services.AddScoped<ChatService>();
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
@@ -59,6 +67,9 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+// Add SignalR hub
+app.MapHub<ChatHub>("/chathub");
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
