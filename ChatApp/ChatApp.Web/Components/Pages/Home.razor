@@ -14,7 +14,7 @@
                     <ChatWindow CurrentUser="@CurrentUser" CurrentChatUser="@CurrentChatUser" IsOnline="true" />
                </div>
                <div class="chat-app__sidebar">
-                    <UserSidebar />
+                    <UserSidebar CurrentChatUserVM="@SelectedChatUser" ChatMessages="@CurrentChatMessages" />
                </div>
           </div>
      </Authorized>
@@ -34,6 +34,8 @@
      private string CurrentUser { get; set; } = null!;
      private string CurrentChatUser { get; set; } = null!;
      private List<ChatUserVM> ChatUsers { get; set; } = new();
+     private List<ChatMessage> CurrentChatMessages { get; set; } = new();
+     private ChatUserVM? SelectedChatUser => ChatUsers.FirstOrDefault(u => u.Name == CurrentChatUser);
 
      protected override async Task OnInitializedAsync()
      {
@@ -81,12 +83,42 @@
           if (ChatUsers.Any())
           {
                CurrentChatUser = ChatUsers.First().Name;
+               await LoadCurrentChatMessages();
           }
      }
 
      private void SetCurrentChatUser(string userName)
      {
           CurrentChatUser = userName;
+          LoadCurrentChatMessages().GetAwaiter().GetResult();
+     }
+
+     private async Task LoadCurrentChatMessages()
+     {
+          if (!string.IsNullOrEmpty(CurrentUser) && !string.IsNullOrEmpty(CurrentChatUser))
+          {
+               CurrentChatMessages = DbContext.Messages
+                   .Where(m => (m.SenderId == CurrentUser && m.ReceiverId == CurrentChatUser) ||
+                               (m.SenderId == CurrentChatUser && m.ReceiverId == CurrentUser))
+                   .OrderBy(m => m.Timestamp)
+                   .Select(m => new ChatMessage
+                   {
+                        Id = m.Id.ToString(),
+                        Sender = m.SenderId,
+                        Receiver = m.ReceiverId,
+                        Content = m.Content,
+                        Timestamp = m.Timestamp,
+                        IsRead = m.IsRead,
+                        ImageUrl = m.ImageUrl,
+                        FileUrl = m.FileUrl,
+                        FileName = m.FileName
+                   })
+                   .ToList();
+          }
+          else
+          {
+               CurrentChatMessages = new List<ChatMessage>();
+          }
      }
 
      private string GetTimeAgo(DateTime timestamp)

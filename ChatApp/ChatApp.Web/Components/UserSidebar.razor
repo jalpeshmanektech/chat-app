@@ -1,20 +1,48 @@
-@rendermode InteractiveServer
+﻿@rendermode InteractiveServer
+
+@using ChatApp.Web.ViewModels
 
 <div class="user-sidebar">
      <div class="user-profile">
-          <img src="/images/no-profile.png" alt="User avatar" />
-          <div class="user-profile__name">John cina</div>
-          <div class="user-profile__status">Last seen 10 min ago<br /></div>
+          <img src="@(CurrentChatUserVM?.AvatarUrl ?? "/images/no-profile.png")" alt="User avatar" />
+          <div class="user-profile__name">@CurrentChatUserVM?.Name</div>
+          <div class="user-profile__status">@CurrentChatUserVM?.TimeAgo</div>
      </div>
-     <div class="user-media-grid">
-          <AuthorizeView>
-               <Authorized>
-                    <form method="post" action="/account/logout">
-                         <AntiforgeryToken />
-                         <input type="hidden" name="returnUrl" value="" />
-                         <button type="submit" class="logout-btn">Logout</button>
-                    </form>
-               </Authorized>
-          </AuthorizeView>
+     <div class="sidebar-divider"></div>
+     <div class="user-media-section">
+          <div class="media-section-title">Shared Media</div>
+          @if (MediaItems.Any())
+          {
+               <div class="media-grid">
+                    @foreach (var media in MediaItems)
+                    {
+                         if (!string.IsNullOrEmpty(media.ImageUrl))
+                         {
+                              <a href="@media.ImageUrl" target="_blank">
+                                   <img src="@media.ImageUrl" alt="Image" class="media-thumb" />
+                              </a>
+                         }
+                         else if (!string.IsNullOrEmpty(media.FileUrl))
+                         {
+                              <a href="@media.FileUrl" target="_blank" class="media-file">
+                                   <span class="file-icon">📄</span> @media.FileName
+                              </a>
+                         }
+                    }
+               </div>
+          }
+          else
+          {
+               <div class="empty-media">No media shared yet.</div>
+          }
      </div>
+     <AuthorizeView>
+          <Authorized>
+               <form method="post" action="/account/logout">
+                    <AntiforgeryToken />
+                    <input type="hidden" name="returnUrl" value="" />
+                    <button type="submit" class="logout-btn">Logout</button>
+               </form>
+          </Authorized>
+     </AuthorizeView>
 </div> 
