@@ -9,6 +9,6 @@ public partial class UserSidebar : ComponentBase
      [Parameter] public List<ChatMessage> ChatMessages { get; set; } = new();
 
      protected List<ChatMessage> MediaItems => ChatMessages
-         .Where(m => !string.IsNullOrEmpty(m.ImageUrl) || !string.IsNullOrEmpty(m.FileUrl))
+         .Where(m => !string.IsNullOrEmpty(m.FileUrl))
          .ToList();
 } 

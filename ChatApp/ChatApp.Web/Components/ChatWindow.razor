@@ -51,9 +51,9 @@
                     }
                     <div class="">
                         <div class="@(msg.Sender == CurrentUser ? "message-bubble--sender" : "message-bubble")">
-                             @if (!string.IsNullOrEmpty(msg.ImageUrl))
+                             @if (!string.IsNullOrEmpty(msg.FileUrl))
                              {
-                                  <img src="@msg.ImageUrl" alt="Attachment" class="message__image" />
+                                  <img src="@msg.FileUrl" alt="Attachment" class="message__image" />
                              }
                              @if (!string.IsNullOrEmpty(msg.Content))
                              {

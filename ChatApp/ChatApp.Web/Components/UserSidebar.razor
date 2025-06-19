@@ -16,10 +16,11 @@
                <div class="media-grid">
                     @foreach (var media in MediaItems)
                     {
-                         if (!string.IsNullOrEmpty(media.ImageUrl))
+                         // need to bind for image only
+                         if (!string.IsNullOrEmpty(media.FileUrl))
                          {
-                              <a href="@media.ImageUrl" target="_blank">
-                                   <img src="@media.ImageUrl" alt="Image" class="media-thumb" />
+                              <a href="@media.FileUrl" target="_blank">
+                                   <img src="@media.FileUrl" alt="Image" class="media-thumb" />
                               </a>
                          }
                          else if (!string.IsNullOrEmpty(media.FileUrl))

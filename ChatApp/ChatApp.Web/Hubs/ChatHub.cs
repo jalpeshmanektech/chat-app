@@ -15,14 +15,14 @@ public class ChatHub : Hub
           _db = db;
      }
 
-     public async Task SendMessage(string sender, string receiver, string message, string? imageUrl)
+     public async Task SendMessage(string sender, string receiver, string message, string? fileUrl)
      {
           var dbMessage = new Message
           {
                SenderId = sender,
                ReceiverId = receiver,
                Content = message,
-               ImageUrl = imageUrl,
+               FileUrl = fileUrl,
                Timestamp = DateTime.UtcNow,
                IsRead = false
           };
@@ -38,7 +38,6 @@ public class ChatHub : Hub
                Content = dbMessage.Content,
                Timestamp = dbMessage.Timestamp,
                IsRead = dbMessage.IsRead,
-               ImageUrl = dbMessage.ImageUrl,
                FileUrl = dbMessage.FileUrl,
                FileName = dbMessage.FileName
           };
@@ -75,7 +74,6 @@ public class ChatHub : Hub
                Content = m.Content,
                Timestamp = m.Timestamp,
                IsRead = m.IsRead,
-               ImageUrl = m.ImageUrl,
                FileUrl = m.FileUrl,
                FileName = m.FileName
           }).ToList();

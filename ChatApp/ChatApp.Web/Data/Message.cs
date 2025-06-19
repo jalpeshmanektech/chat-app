@@ -8,8 +8,8 @@
           public string Content { get; set; } = string.Empty;
           public DateTime Timestamp { get; set; } = DateTime.UtcNow;
           public bool IsRead { get; set; } = false;
-          public string? ImageUrl { get; set; }
           public string? FileUrl { get; set; }
           public string? FileName { get; set; }
+          public string? FileType { get; set; } // image, gif, pdf, video, doc, etc.
      }
 }
