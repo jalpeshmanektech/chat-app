@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using ChatApp.Web.Data
+@using ChatApp.Web.ViewModels
 @using Microsoft.AspNetCore.Identity
 @rendermode InteractiveServer
 
@@ -8,7 +9,7 @@
 <AuthorizeView>
      <Authorized>
           <div class="chat-app">
-               <ChatList OnUserSelected="SetCurrentChatUser" />
+               <ChatList OnUserSelected="SetCurrentChatUser" Users="ChatUsers" />
                <div class="chat-app__main">
                     <ChatWindow CurrentUser="@CurrentUser" CurrentChatUser="@CurrentChatUser" IsOnline="true" />
                </div>
@@ -27,9 +28,12 @@
 
 @code {
      [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+     [Inject] private UserManager<ApplicationUser> UserManager { get; set; } = default!;
+     [Inject] private ApplicationDbContext DbContext { get; set; } = default!;
 
      private string CurrentUser { get; set; } = null!;
      private string CurrentChatUser { get; set; } = null!;
+     private List<ChatUserVM> ChatUsers { get; set; } = new();
 
      protected override async Task OnInitializedAsync()
      {
@@ -43,10 +47,57 @@
           {
                CurrentUser = "Unknown";
           }
+
+          // Load all users except the current user
+          var dbUsers = UserManager.Users.ToList();
+          ChatUsers = new List<ChatUserVM>();
+
+          foreach (var u in dbUsers)
+          {
+               if (u.UserName == CurrentUser)
+                    continue;
+
+               var lastMsg = DbContext.Messages
+                   .Where(m =>
+                       (m.SenderId == CurrentUser && m.ReceiverId == u.UserName) ||
+                       (m.SenderId == u.UserName && m.ReceiverId == CurrentUser))
+                   .OrderByDescending(m => m.Timestamp)
+                   .FirstOrDefault();
+
+               string lastMessageText = lastMsg?.Content ?? "";
+               string timeAgo = lastMsg != null ? GetTimeAgo(lastMsg.Timestamp) : "";
+
+               ChatUsers.Add(new ChatUserVM
+               {
+                    Name = u.UserName ?? "",
+                    LastMessage = lastMessageText,
+                    TimeAgo = timeAgo,
+                    AvatarUrl = "/images/avatar-placeholder.png",
+                    IsOnline = false
+               });
+          }
+
+          // Set the first user as the default chat user
+          if (ChatUsers.Any())
+          {
+               CurrentChatUser = ChatUsers.First().Name;
+          }
      }
 
      private void SetCurrentChatUser(string userName)
      {
           CurrentChatUser = userName;
+     }
+
+     private string GetTimeAgo(DateTime timestamp)
+     {
+          var span = DateTime.UtcNow - timestamp;
+          if (span.TotalMinutes < 1)
+               return "just now";
+          if (span.TotalMinutes < 60)
+               return $"{(int)span.TotalMinutes} min ago";
+          if (span.TotalHours < 24)
+               return $"{(int)span.TotalHours} hour{(span.TotalHours >= 2 ? "s" : "")} ago";
+          return timestamp.ToLocalTime().ToString("yyyy-MM-dd HH:mm");
      }
 }

@@ -1,7 +1,8 @@
 @rendermode InteractiveServer
 
 <div class="chat-list">
-    <h3>Chat app</h3>
+     <h3>Chat app</h3>
+          <input type="text" class="chat-list__search" placeholder="Search by user or message..." @bind="searchTerm" @bind:event="oninput" />
     <div>
         @foreach (var user in FilteredUsers)
         {
