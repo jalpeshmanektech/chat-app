@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.SignalR.Client;
 using ChatApp.Web.Hubs;
 using Microsoft.AspNetCore.Components;
+using ChatApp.Web.ViewModels;
 
 namespace ChatApp.Web.Services;
 

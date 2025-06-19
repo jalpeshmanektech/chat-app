@@ -3,6 +3,7 @@ using ChatApp.Web.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components.Authorization;
+using ChatApp.Web.ViewModels;
 
 namespace ChatApp.Web.Components;
 
@@ -33,9 +34,6 @@ public partial class ChatWindow : ComponentBase
                CurrentUser = "Unknown";
           }
 
-          Console.WriteLine("ChatWindow initialized");
-          Console.WriteLine($"CurrentUser: {CurrentUser}");
-          Console.WriteLine($"CurrentChatUser: {CurrentChatUser}");
 
           // Subscribe to chat events
           ChatService.MessageReceived += OnMessageReceived;
@@ -165,7 +163,7 @@ public partial class ChatWindow : ComponentBase
 
      private async Task ScrollToBottom()
      {
-          await Task.Delay(100); // Small delay to ensure DOM is updated
+          await Task.Delay(100);
           try
           {
                await JS.InvokeVoidAsync("scrollToBottom", messagesContainer);
