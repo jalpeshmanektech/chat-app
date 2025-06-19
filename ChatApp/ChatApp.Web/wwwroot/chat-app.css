@@ -383,6 +383,23 @@ input:focus, textarea:focus {
      display: block;
 }
 
+.inputfile-hidden {
+     opacity: 0;
+     position: absolute;
+     width: 24px;
+     height: 24px;
+     left: 0;
+     top: 0;
+     cursor: pointer;
+     z-index: 2;
+}
+
+.inputfile-label {
+     position: relative;
+     display: inline-block;
+     cursor: pointer;
+} 
+
 /* ===== CHAT WINDOW STYLES ===== */
 .chat-window {
   flex: 1;

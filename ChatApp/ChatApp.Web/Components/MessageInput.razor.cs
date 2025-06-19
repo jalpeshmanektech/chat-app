@@ -15,14 +15,11 @@ public partial class MessageInput : ComponentBase, IDisposable
      [Parameter] public Func<string, string?, Task>? OnSendMessage { get; set; }
      [Parameter] public Func<Task>? OnTyping { get; set; }
      [Parameter] public Func<Task>? OnStopTyping { get; set; }
-
      private string MessageText { get; set; } = string.Empty;
-     private InputFile fileInput;
      private ElementReference messageInput;
      private IBrowserFile? selectedFile;
      private Timer? typingTimer;
 
-    
      protected override void OnInitialized()
      {
           Console.WriteLine("MessageInput component initialized");
@@ -31,15 +28,9 @@ public partial class MessageInput : ComponentBase, IDisposable
           Console.WriteLine($"OnStopTyping is null: {OnStopTyping == null}");
      }
 
-     private async Task TriggerFileInput()
-     {
-          await JS.InvokeVoidAsync("triggerFileInput", fileInput);
-     }
-
      private void OnFileSelected(InputFileChangeEventArgs e)
      {
           selectedFile = e.File;
-          StateHasChanged();
      }
 
      private async Task<string?> UploadImageAsync()

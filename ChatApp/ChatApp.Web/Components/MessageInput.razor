@@ -1,24 +1,24 @@
 <div class="message-input">
-    <div class="message-input__container">
-       <div class="message-input__actions">
-            <button title="Add file" class="message-input__action">
-                <span>📎</span>
-            </button>
-            <button type="button" title="Attach image" class="message-input__action" @onclick="TriggerFileInput">
-                <span>🖼️</span>
-            </button>
-            <button title="Attach video" class="message-input__action">
-                <span>🎥</span>
-            </button>
-            <button title="Attach PDF" class="message-input__action">
-                <span>📄</span>
-            </button>
-            <button title="Attach GIF" class="message-input__action">
-                <span>GIF</span>
-            </button>
-            <InputFile OnChange="OnFileSelected" accept="image/*" @ref="fileInput"/>
-        </div>
-        <div class="message-input__field-container">
+     <div class="message-input__container">
+          <div class="message-input__actions">
+               <button title="Add file" class="message-input__action">
+                    <span>📎</span>
+               </button>
+               <label class="inputfile-label" title="Attach image">
+                    <span>🖼️</span>
+                    <InputFile OnChange="OnFileSelected" accept="image/*" class="inputfile-hidden" />
+               </label>
+               <button title="Attach video" class="message-input__action">
+                    <span>🎥</span>
+               </button>
+               <button title="Attach PDF" class="message-input__action">
+                    <span>📄</span>
+               </button>
+               <button title="Attach GIF" class="message-input__action">
+                    <span>GIF</span>
+               </button>
+          </div>
+          <div class="message-input__field-container">
                <textarea @bind="@MessageText"
                          @bind:event="oninput"
                          @onkeydown="OnKeyDown"
@@ -28,21 +28,20 @@
                          rows="1"
                          @ref="messageInput">
                </textarea>
-        </div>
-        
-        <div class="message-input__actions">
-            <button title="Emoji" class="message-input__action">
-                <span>😊</span>
-            </button>
-           
+          </div>
 
-            <button 
-                title="Send" 
-                class="message-input__send"
-                @onclick="SendMessage"
-                disabled="@(!string.IsNullOrWhiteSpace(MessageText?.Trim()) || selectedFile == null)">
-                <span>➡️</span>
-            </button>
-        </div>
-    </div>
+          <div class="message-input__actions">
+               <button title="Emoji" class="message-input__action">
+                    <span>😊</span>
+               </button>
+
+
+               <button title="Send"
+                       class="message-input__send"
+                       @onclick="SendMessage"
+                       disabled="@(!string.IsNullOrWhiteSpace(MessageText?.Trim()) || selectedFile == null)">
+                    <span>➡️</span>
+               </button>
+          </div>
+     </div>
 </div>
