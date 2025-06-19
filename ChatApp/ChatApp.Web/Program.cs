@@ -13,6 +13,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Add controllers and HttpClient for file upload
+builder.Services.AddControllers();
+builder.Services.AddHttpClient();
+
 // Add SignalR
 builder.Services.AddSignalR();
 
@@ -64,6 +68,9 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+// Map controllers for API endpoints
+app.MapControllers();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

@@ -15,13 +15,14 @@ public class ChatHub : Hub
           _db = db;
      }
 
-     public async Task SendMessage(string sender, string receiver, string message)
+     public async Task SendMessage(string sender, string receiver, string message, string? imageUrl)
      {
           var dbMessage = new Message
           {
                SenderId = sender,
                ReceiverId = receiver,
                Content = message,
+               ImageUrl = imageUrl,
                Timestamp = DateTime.UtcNow,
                IsRead = false
           };

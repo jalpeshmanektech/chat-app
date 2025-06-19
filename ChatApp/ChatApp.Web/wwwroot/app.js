@@ -149,4 +149,9 @@ window.isDocumentFile = function (filename) {
     const documentExtensions = ['.pdf', '.doc', '.docx', '.txt', '.rtf'];
     const extension = filename.toLowerCase().substring(filename.lastIndexOf('.'));
     return documentExtensions.includes(extension);
+};
+
+// Add this for file input trigger
+window.triggerFileInput = function (element) {
+    element.click();
 }; 
