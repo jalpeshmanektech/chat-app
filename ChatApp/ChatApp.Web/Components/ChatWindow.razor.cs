@@ -11,10 +11,8 @@ public partial class ChatWindow : ComponentBase
 {
      [Inject] private ChatService ChatService { get; set; } = default!;
      [Inject] private IJSRuntime JS { get; set; } = default!;
-     [Inject] private NavigationManager Navigation { get; set; } = default!;
-     [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
      [Parameter] public string CurrentUser { get; set; } = null!;
-     [Parameter] public string CurrentChatUser { get; set; } = "Anna Nowak";
+     [Parameter] public string CurrentChatUser { get; set; } = null!;
      [Parameter] public bool IsOnline { get; set; } = true;
 
      private List<ChatMessage> Messages { get; set; } = new();
@@ -23,18 +21,6 @@ public partial class ChatWindow : ComponentBase
 
      protected override async Task OnInitializedAsync()
      {
-          var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-          var user = authState.User;
-          if (user.Identity?.IsAuthenticated == true)
-          {
-               CurrentUser = user.Identity.Name ?? "Unknown";
-          }
-          else
-          {
-               CurrentUser = "Unknown";
-          }
-
-
           // Subscribe to chat events
           ChatService.MessageReceived += OnMessageReceived;
           ChatService.MessageSent += OnMessageSent;

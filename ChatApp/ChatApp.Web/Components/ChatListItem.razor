@@ -1,14 +1,14 @@
-<div class="chat-list__item">
-    <div class="avatar">
-        <img src="@AvatarUrl" alt="User avatar" />
-        @if (IsOnline)
-        {
-            <span class="avatar__status"></span>
-        }
-    </div>
-    <div class="chat-info">
-        <div class="chat-info__name">@Name</div>
-        <div class="chat-info__last-message">@LastMessage</div>
-        <div class="chat-info__time">@TimeAgo</div>
-    </div>
-</div> 
+<div class="chat-list__item" @onclick="HandleClick" style="cursor:pointer;">
+     <div class="avatar">
+          <img src="@AvatarUrl" alt="User avatar" />
+          @if (IsOnline)
+          {
+               <span class="avatar__status"></span>
+          }
+     </div>
+     <div class="chat-info">
+          <div class="chat-info__name">@Name</div>
+          <div class="chat-info__last-message">@LastMessage</div>
+          <div class="chat-info__time">@TimeAgo</div>
+     </div>
+</div>

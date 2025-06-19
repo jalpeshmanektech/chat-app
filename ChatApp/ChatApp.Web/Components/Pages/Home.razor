@@ -1,29 +1,52 @@
 ﻿@page "/"
+@using ChatApp.Web.Data
+@using Microsoft.AspNetCore.Identity
 @rendermode InteractiveServer
 
 <PageTitle>Chat App</PageTitle>
 
 <AuthorizeView>
-    <Authorized>
-        <div class="chat-app">
-            <ChatList />
-            <div class="chat-app__main">
-                <ChatWindow CurrentUser="@CurrentUser" CurrentChatUser="@CurrentChatUser" IsOnline="true" />
-            </div>
-            <div class="chat-app__sidebar">
-                <UserSidebar />
-            </div>
-        </div>
-    </Authorized>
-    <NotAuthorized>
-        <div class="login-prompt">
-            <h3>You must be logged in to use the chat.</h3>
-            <a href="/account/login">Go to Login</a>
-        </div>
-    </NotAuthorized>
+     <Authorized>
+          <div class="chat-app">
+               <ChatList OnUserSelected="SetCurrentChatUser" />
+               <div class="chat-app__main">
+                    <ChatWindow CurrentUser="@CurrentUser" CurrentChatUser="@CurrentChatUser" IsOnline="true" />
+               </div>
+               <div class="chat-app__sidebar">
+                    <UserSidebar />
+               </div>
+          </div>
+     </Authorized>
+     <NotAuthorized>
+          <div class="login-prompt">
+               <h3>You must be logged in to use the chat.</h3>
+               <a href="/account/login">Go to Login</a>
+          </div>
+     </NotAuthorized>
 </AuthorizeView>
 
 @code {
-    private string CurrentUser { get; set; } = "Me";
-    private string CurrentChatUser { get; set; } = "Jalpesh Nakum";
+     [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+     private string CurrentUser { get; set; } = null!;
+     private string CurrentChatUser { get; set; } = null!;
+
+     protected override async Task OnInitializedAsync()
+     {
+          var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+          var user = authState.User;
+          if (user.Identity?.IsAuthenticated == true)
+          {
+               CurrentUser = user.Identity.Name ?? "Unknown";
+          }
+          else
+          {
+               CurrentUser = "Unknown";
+          }
+     }
+
+     private void SetCurrentChatUser(string userName)
+     {
+          CurrentChatUser = userName;
+     }
 }
