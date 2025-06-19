@@ -17,6 +17,7 @@ public partial class MessageInput : ComponentBase, IDisposable
      [Parameter] public Func<Task>? OnStopTyping { get; set; }
 
      private string MessageText { get; set; } = string.Empty;
+     private InputFile fileInput;
      private ElementReference messageInput;
      private IBrowserFile? selectedFile;
      private Timer? typingTimer;
@@ -32,12 +33,13 @@ public partial class MessageInput : ComponentBase, IDisposable
 
      private async Task TriggerFileInput()
      {
-          await JS.InvokeVoidAsync("triggerFileInput", messageInput);
+          await JS.InvokeVoidAsync("triggerFileInput", fileInput);
      }
 
      private void OnFileSelected(InputFileChangeEventArgs e)
      {
           selectedFile = e.File;
+          StateHasChanged();
      }
 
      private async Task<string?> UploadImageAsync()
@@ -45,7 +47,7 @@ public partial class MessageInput : ComponentBase, IDisposable
           if (selectedFile == null) return null;
           var content = new MultipartFormDataContent();
           content.Add(new StreamContent(selectedFile.OpenReadStream(10_000_000)), "file", selectedFile.Name);
-          var response = await Http.PostAsync("/api/upload", content);
+          var response = await Http.PostAsync("https://localhost:7042/api/upload", content);
           if (response.IsSuccessStatusCode)
           {
                var json = await response.Content.ReadFromJsonAsync<JsonElement>();

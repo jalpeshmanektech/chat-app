@@ -375,6 +375,14 @@ input:focus, textarea:focus {
           align-self: flex-start;
      }
 
+.message__image {
+     max-width: 220px;
+     max-height: 180px;
+     border-radius: 10px;
+     margin-top: 6px;
+     display: block;
+}
+
 /* ===== CHAT WINDOW STYLES ===== */
 .chat-window {
   flex: 1;

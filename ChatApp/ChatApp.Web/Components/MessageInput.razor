@@ -1,10 +1,10 @@
 <div class="message-input">
     <div class="message-input__container">
-        <div class="message-input__actions">
+       <div class="message-input__actions">
             <button title="Add file" class="message-input__action">
                 <span>📎</span>
             </button>
-            <button title="Attach image" class="message-input__action">
+            <button type="button" title="Attach image" class="message-input__action" @onclick="TriggerFileInput">
                 <span>🖼️</span>
             </button>
             <button title="Attach video" class="message-input__action">
@@ -16,8 +16,8 @@
             <button title="Attach GIF" class="message-input__action">
                 <span>GIF</span>
             </button>
+            <InputFile OnChange="OnFileSelected" accept="image/*" @ref="fileInput"/>
         </div>
-        
         <div class="message-input__field-container">
                <textarea @bind="@MessageText"
                          @bind:event="oninput"
@@ -40,7 +40,7 @@
                 title="Send" 
                 class="message-input__send"
                 @onclick="SendMessage"
-                disabled="@string.IsNullOrWhiteSpace(MessageText?.Trim())">
+                disabled="@(!string.IsNullOrWhiteSpace(MessageText?.Trim()) || selectedFile == null)">
                 <span>➡️</span>
             </button>
         </div>
