@@ -14,11 +14,21 @@ public partial class ChatWindow : ComponentBase
      [Parameter] public string CurrentUser { get; set; } = null!;
      [Parameter] public string CurrentChatUser { get; set; } = null!;
      [Parameter] public bool IsOnline { get; set; } = true;
-
      private List<ChatMessage> Messages { get; set; } = new();
      private bool IsTyping { get; set; } = false;
      private ElementReference messagesContainer;
+     private string? _lastChatUser;
 
+     protected override async Task OnParametersSetAsync()
+     {
+          if (_lastChatUser != CurrentChatUser)
+          {
+               _lastChatUser = CurrentChatUser;
+               Messages.Clear();
+               await ChatService.JoinChatAsync(CurrentUser);
+               StateHasChanged();
+          }
+     }
      protected override async Task OnInitializedAsync()
      {
           // Subscribe to chat events

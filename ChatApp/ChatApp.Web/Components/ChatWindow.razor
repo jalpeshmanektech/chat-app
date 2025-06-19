@@ -46,19 +46,19 @@
                     @if (msg.Sender != CurrentUser)
                     {
                         <div class="message__avatar">
-                            <img src="/images/avatar-placeholder.png" alt="Avatar" />
+                            <img src="/images/no-profile.png" alt="Avatar" />
                         </div>
                     }
-                    <div class="message__content">
-                        <div class="message-bubble">
-                            @if (!string.IsNullOrEmpty(msg.ImageUrl))
-                            {
-                                <img src="@msg.ImageUrl" alt="Attachment" class="message__image" />
-                            }
-                            @if (!string.IsNullOrEmpty(msg.Content))
-                            {
-                                <div>@msg.Content</div>
-                            }
+                    <div class="">
+                        <div class="@(msg.Sender == CurrentUser ? "message-bubble--sender" : "message-bubble")">
+                             @if (!string.IsNullOrEmpty(msg.ImageUrl))
+                             {
+                                  <img src="@msg.ImageUrl" alt="Attachment" class="message__image" />
+                             }
+                             @if (!string.IsNullOrEmpty(msg.Content))
+                             {
+                                  <div>@msg.Content</div>
+                             }
                         </div>
                         <div class="message__time">
                             @msg.Timestamp.ToString("HH:mm")
