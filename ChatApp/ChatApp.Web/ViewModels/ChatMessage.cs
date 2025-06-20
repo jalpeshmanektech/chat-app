@@ -10,6 +10,6 @@
           public bool IsRead { get; set; }
           public string? FileUrl { get; set; }
           public string? FileName { get; set; }
-          public string? FileType { get; set; }
+          public string? FileType { get; set; } // image, gif, pdf, video, text, file
      }
 }

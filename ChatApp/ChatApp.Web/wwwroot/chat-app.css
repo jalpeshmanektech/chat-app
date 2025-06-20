@@ -376,11 +376,41 @@ input, textarea {
      }
 
 .message__image {
-     max-width: 220px;
-     max-height: 180px;
-     border-radius: 10px;
-     margin-top: 6px;
-     display: block;
+     max-width: 200px;
+     max-height: 200px;
+     border-radius: 8px;
+     margin: 5px 0;
+}
+
+.message__video {
+     max-width: 300px;
+     max-height: 200px;
+     border-radius: 8px;
+     margin: 5px 0;
+}
+
+.message__file {
+     display: inline-flex;
+     align-items: center;
+     background: var(--attachment-background);
+     border-radius: 6px;
+     padding: 8px 12px;
+     color: var(--text-color);
+     text-decoration: none;
+     font-size: 0.9em;
+     border: 1px solid var(--border-color);
+     transition: background 0.15s, color 0.15s;
+     margin: 5px 0;
+}
+
+.message__file:hover {
+     background: #2d88ff;
+     color: #fff;
+}
+
+.message__file .file-icon {
+     margin-right: 8px;
+     font-size: 1.1em;
 }
 
 .inputfile-hidden {

@@ -53,7 +53,26 @@
                         <div class="@(msg.Sender == CurrentUser ? "message-bubble--sender" : "message-bubble")">
                              @if (!string.IsNullOrEmpty(msg.FileUrl))
                              {
-                                  <img src="@msg.FileUrl" alt="Attachment" class="message__image" />
+                                  @switch (msg.FileType)
+                                  {
+                                      case "image":
+                                      case "gif":
+                                          <img src="@msg.FileUrl" alt="Image" class="message__image" />
+                                          break;
+                                      case "video":
+                                          <video controls class="message__video">
+                                              <source src="@msg.FileUrl" type="video/mp4">
+                                              Your browser does not support the video tag.
+                                          </video>
+                                          break;
+                                      case "pdf":
+                                      case "text":
+                                      default:
+                                          <a href="@msg.FileUrl" target="_blank" class="message__file">
+                                              <span class="file-icon">📎</span> @msg.FileName
+                                          </a>
+                                          break;
+                                  }
                              }
                              @if (!string.IsNullOrEmpty(msg.Content))
                              {

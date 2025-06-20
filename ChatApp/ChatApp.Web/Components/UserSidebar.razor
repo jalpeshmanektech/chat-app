@@ -16,18 +16,34 @@
                <div class="media-grid">
                     @foreach (var media in MediaItems)
                     {
-                         // need to bind for image only
-                         if (!string.IsNullOrEmpty(media.FileUrl))
+                         @switch (media.FileType)
                          {
-                              <a href="@media.FileUrl" target="_blank">
-                                   <img src="@media.FileUrl" alt="Image" class="media-thumb" />
-                              </a>
-                         }
-                         else if (!string.IsNullOrEmpty(media.FileUrl))
-                         {
-                              <a href="@media.FileUrl" target="_blank" class="media-file">
-                                   <span class="file-icon">📄</span> @media.FileName
-                              </a>
+                              case "image":
+                              case "gif":
+                                   <a href="@media.FileUrl" target="_blank">
+                                        <img src="@media.FileUrl" alt="Image" class="media-thumb" />
+                                   </a>
+                                   break;
+                              case "video":
+                                   <a href="@media.FileUrl" target="_blank" class="media-file">
+                                        <span class="file-icon">🎥</span> @media.FileName
+                                   </a>
+                                   break;
+                              case "pdf":
+                                   <a href="@media.FileUrl" target="_blank" class="media-file">
+                                        <span class="file-icon">📄</span> @media.FileName
+                                   </a>
+                                   break;
+                              case "text":
+                                   <a href="@media.FileUrl" target="_blank" class="media-file">
+                                        <span class="file-icon">📝</span> @media.FileName
+                                   </a>
+                                   break;
+                              default:
+                                   <a href="@media.FileUrl" target="_blank" class="media-file">
+                                        <span class="file-icon">📎</span> @media.FileName
+                                   </a>
+                                   break;
                          }
                     }
                </div>

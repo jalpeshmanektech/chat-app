@@ -101,8 +101,7 @@
                    .Where(m => (m.SenderId == CurrentUser && m.ReceiverId == CurrentChatUser) ||
                                (m.SenderId == CurrentChatUser && m.ReceiverId == CurrentUser))
                    .OrderBy(m => m.Timestamp)
-                   .Select(m => new ChatMessage
-                   {
+                   .Select(m => new ChatMessage {
                         Id = m.Id.ToString(),
                         Sender = m.SenderId,
                         Receiver = m.ReceiverId,
@@ -110,7 +109,8 @@
                         Timestamp = m.Timestamp,
                         IsRead = m.IsRead,
                         FileUrl = m.FileUrl,
-                        FileName = m.FileName
+                        FileName = m.FileName,
+                        FileType = m.FileType
                    })
                    .ToList();
           }
