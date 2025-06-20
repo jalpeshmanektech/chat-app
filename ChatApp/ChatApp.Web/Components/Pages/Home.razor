@@ -90,12 +90,14 @@
           }
      }
 
-     private void OnMessageActivity(ChatMessage message)
+     private async void OnMessageActivity(ChatMessage message)
      {
           UpdateChatListWithMessage(message);
+          await LoadCurrentChatMessages();
+          await InvokeAsync(StateHasChanged);
      }
 
-     private async void UpdateChatListWithMessage(ChatMessage message)
+     private void UpdateChatListWithMessage(ChatMessage message)
      {
           var chatUser = ChatUsers.FirstOrDefault(u => u.Name == (message.Sender == CurrentUser ? message.Receiver : message.Sender));
           if (chatUser != null)
@@ -115,7 +117,6 @@
                     return lastMsg?.Timestamp ?? DateTime.MinValue;
                })
                .ToList();
-          await InvokeAsync(StateHasChanged);
      }
 
      private void SetCurrentChatUser(string userName)
@@ -132,7 +133,8 @@
                    .Where(m => (m.SenderId == CurrentUser && m.ReceiverId == CurrentChatUser) ||
                                (m.SenderId == CurrentChatUser && m.ReceiverId == CurrentUser))
                    .OrderBy(m => m.Timestamp)
-                   .Select(m => new ChatMessage {
+                   .Select(m => new ChatMessage
+                   {
                         Id = m.Id.ToString(),
                         Sender = m.SenderId,
                         Receiver = m.ReceiverId,
