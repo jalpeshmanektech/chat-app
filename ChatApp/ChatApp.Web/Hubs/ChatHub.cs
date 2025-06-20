@@ -58,6 +58,7 @@ public class ChatHub : Hub
      public async Task JoinChat(string username)
      {
           _userConnections[username] = Context.ConnectionId;
+          await Clients.All.SendAsync("UserStatusChanged", username, true);
           await Clients.All.SendAsync("UserJoined", username);
 
           // Send recent messages to the user
@@ -88,6 +89,7 @@ public class ChatHub : Hub
      public async Task LeaveChat(string username)
      {
           _userConnections.Remove(username);
+          await Clients.All.SendAsync("UserStatusChanged", username, false);
           await Clients.All.SendAsync("UserLeft", username);
      }
 
@@ -127,25 +129,14 @@ public class ChatHub : Hub
           }
      }
 
-     public override async Task OnConnectedAsync()
-     {
-         var userName = Context.User?.Identity?.Name;
-         if (!string.IsNullOrEmpty(userName))
-         {
-             _userConnections[userName] = Context.ConnectionId;
-             await Clients.All.SendAsync("UserStatusChanged", userName, true);
-         }
-         await base.OnConnectedAsync();
-     }
-
      public override async Task OnDisconnectedAsync(Exception? exception)
      {
-         var userName = _userConnections.FirstOrDefault(x => x.Value == Context.ConnectionId).Key;
-         if (!string.IsNullOrEmpty(userName))
-         {
-             _userConnections.Remove(userName);
-             await Clients.All.SendAsync("UserStatusChanged", userName, false);
-         }
-         await base.OnDisconnectedAsync(exception);
+          var userName = _userConnections.FirstOrDefault(x => x.Value == Context.ConnectionId).Key;
+          if (!string.IsNullOrEmpty(userName))
+          {
+               _userConnections.Remove(userName);
+               await Clients.All.SendAsync("UserStatusChanged", userName, false);
+          }
+          await base.OnDisconnectedAsync(exception);
      }
 }
