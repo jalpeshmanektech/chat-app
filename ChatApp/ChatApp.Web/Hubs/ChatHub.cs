@@ -117,7 +117,13 @@ public class ChatHub : Hub
                     message.IsRead = true;
                     await _db.SaveChangesAsync();
                     await Clients.Caller.SendAsync("MessageRead", messageId);
+                    if (_userConnections.TryGetValue(message.SenderId, out var senderConnectionId))
+                    {
+                         await Clients.Client(senderConnectionId).SendAsync("MessageRead", messageId);
+                    }
                }
+
+
           }
      }
 

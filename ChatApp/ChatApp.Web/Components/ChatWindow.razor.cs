@@ -86,7 +86,7 @@ public partial class ChatWindow : ComponentBase
                     // If this message is from the current chat user, mark it as read
                     if (message.Receiver == CurrentUser)
                     {
-                        await ChatService.MarkAsReadAsync(message.Id, CurrentUser);
+                        ChatService.MarkAsReadAsync(message.Id, CurrentUser);
                     }
                });
           }
@@ -137,7 +137,7 @@ public partial class ChatWindow : ComponentBase
                Messages = filteredMessages;
                StateHasChanged();
                ScrollToBottom();
-               await MarkVisibleMessagesAsReadAsync();
+               MarkVisibleMessagesAsReadAsync();
           });
      }
 
