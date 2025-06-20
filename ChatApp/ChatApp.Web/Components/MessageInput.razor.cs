@@ -59,6 +59,11 @@ public partial class MessageInput : ComponentBase, IDisposable
           fileValidationError = null;
      }
 
+     private void ClearFileValidationError()
+     {
+          fileValidationError = null;
+     }
+
      private async Task<string?> UploadFileAsync()
      {
           if (selectedFile == null) return null;

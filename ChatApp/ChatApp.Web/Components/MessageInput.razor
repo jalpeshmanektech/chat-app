@@ -41,7 +41,8 @@
      @if (!string.IsNullOrEmpty(fileValidationError))
      {
          <div class="file-validation-error">
-             @fileValidationError
+             <span>@fileValidationError</span>
+             <button @onclick="ClearFileValidationError" class="close-error-btn" title="Close">&times;</button>
          </div>
      }
 </div>
