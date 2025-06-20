@@ -2,16 +2,25 @@
 
 <div class="chat-list">
      <h3>Chat app</h3>
-          <input type="text" class="chat-list__search" placeholder="Search by user or message..." @bind="searchTerm" @bind:event="oninput" />
-    <div>
-        @foreach (var user in FilteredUsers)
-        {
-              <ChatListItem Name="@user.Name"
-                          LastMessage="@user.LastMessage"
-                          TimeAgo="@user.TimeAgo"
-                          AvatarUrl="@user.AvatarUrl"
-                          IsOnline="@user.IsOnline"
-                          OnUserSelected="HandleUserSelected" />
-        }
-    </div>
+     <input type="text" class="chat-list__search" placeholder="Search by user or message..." @bind="searchTerm" @bind:event="oninput" />
+     <div>
+          @foreach (var user in FilteredUsers)
+          {
+               <ChatListItem Name="@user.Name"
+                             LastMessage="@user.LastMessage"
+                             TimeAgo="@user.TimeAgo"
+                             AvatarUrl="@user.AvatarUrl"
+                             IsOnline="@user.IsOnline"
+                             OnUserSelected="HandleUserSelected" />
+          }
+          <AuthorizeView>
+               <Authorized>
+                    <form method="post" action="/account/logout">
+                         <AntiforgeryToken />
+                         <input type="hidden" name="returnUrl" value="" />
+                         <button type="submit" class="logout-btn">Logout</button>
+                    </form>
+               </Authorized>
+          </AuthorizeView>
+     </div>
 </div> 

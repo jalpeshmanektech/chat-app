@@ -15,7 +15,7 @@ public class ChatHub : Hub
           _db = db;
      }
 
-     public async Task SendMessage(string sender, string receiver, string message, string? fileUrl)
+     public async Task SendMessage(string sender, string receiver, string message, string? fileUrl, string? fileName, string? fileType)
      {
           var dbMessage = new Message
           {
@@ -23,6 +23,8 @@ public class ChatHub : Hub
                ReceiverId = receiver,
                Content = message,
                FileUrl = fileUrl,
+               FileName = fileName,
+               FileType = fileType,
                Timestamp = DateTime.UtcNow,
                IsRead = false
           };
@@ -39,7 +41,8 @@ public class ChatHub : Hub
                Timestamp = dbMessage.Timestamp,
                IsRead = dbMessage.IsRead,
                FileUrl = dbMessage.FileUrl,
-               FileName = dbMessage.FileName
+               FileName = dbMessage.FileName,
+               FileType = dbMessage.FileType,
           };
 
           // Send to specific user if they're online
@@ -75,7 +78,8 @@ public class ChatHub : Hub
                Timestamp = m.Timestamp,
                IsRead = m.IsRead,
                FileUrl = m.FileUrl,
-               FileName = m.FileName
+               FileName = m.FileName,
+               FileType = m.FileType
           }).ToList();
 
           await Clients.Caller.SendAsync("LoadMessages", chatMessages);

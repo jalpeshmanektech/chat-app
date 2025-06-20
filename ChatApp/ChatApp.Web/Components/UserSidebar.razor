@@ -25,23 +25,23 @@
                                    </a>
                                    break;
                               case "video":
-                                   <a href="@media.FileUrl" target="_blank" class="media-file">
-                                        <span class="file-icon">🎥</span> @media.FileName
+                                   <a href="@media.FileUrl" target="_blank" class="media-file" title="@media.FileName">
+                                        <span class="file-icon">🎥</span>
                                    </a>
                                    break;
                               case "pdf":
-                                   <a href="@media.FileUrl" target="_blank" class="media-file">
-                                        <span class="file-icon">📄</span> @media.FileName
+                                   <a href="@media.FileUrl" target="_blank" class="media-file" title="@media.FileName">
+                                        <span class="file-icon">📄</span>
                                    </a>
                                    break;
                               case "text":
-                                   <a href="@media.FileUrl" target="_blank" class="media-file">
-                                        <span class="file-icon">📝</span> @media.FileName
+                                   <a href="@media.FileUrl" target="_blank" class="media-file" title="@media.FileName">
+                                        <span class="file-icon">📝</span>
                                    </a>
                                    break;
                               default:
-                                   <a href="@media.FileUrl" target="_blank" class="media-file">
-                                        <span class="file-icon">📎</span> @media.FileName
+                                   <a href="@media.FileUrl" target="_blank" class="media-file" title="@media.FileName">
+                                        <span class="file-icon">📎</span>
                                    </a>
                                    break;
                          }
@@ -53,13 +53,5 @@
                <div class="empty-media">No media shared yet.</div>
           }
      </div>
-     <AuthorizeView>
-          <Authorized>
-               <form method="post" action="/account/logout">
-                    <AntiforgeryToken />
-                    <input type="hidden" name="returnUrl" value="" />
-                    <button type="submit" class="logout-btn">Logout</button>
-               </form>
-          </Authorized>
-     </AuthorizeView>
+     
 </div> 
