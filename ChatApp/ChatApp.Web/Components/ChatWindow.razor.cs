@@ -37,6 +37,7 @@ public partial class ChatWindow : ComponentBase
           ChatService.MessagesLoaded += OnMessagesLoaded;
           ChatService.UserTyping += OnUserTyping;
           ChatService.UserStoppedTyping += OnUserStoppedTyping;
+          ChatService.MessageRead += OnMessageRead;
 
           // Start SignalR connection
           await ChatService.StartAsync();
@@ -81,6 +82,12 @@ public partial class ChatWindow : ComponentBase
                     Console.WriteLine($"Message added to list. New count: {Messages.Count}");
                     StateHasChanged();
                     ScrollToBottom();
+
+                    // If this message is from the current chat user, mark it as read
+                    if (message.Receiver == CurrentUser)
+                    {
+                        await ChatService.MarkAsReadAsync(message.Id, CurrentUser);
+                    }
                });
           }
           else
@@ -130,6 +137,7 @@ public partial class ChatWindow : ComponentBase
                Messages = filteredMessages;
                StateHasChanged();
                ScrollToBottom();
+               await MarkVisibleMessagesAsReadAsync();
           });
      }
 
@@ -157,6 +165,31 @@ public partial class ChatWindow : ComponentBase
           }
      }
 
+     private async void OnMessageRead(string messageId)
+     {
+         await InvokeAsync(() =>
+         {
+             var message = Messages.FirstOrDefault(m => m.Id == messageId);
+             if (message != null)
+             {
+                 message.IsRead = true;
+                 StateHasChanged();
+             }
+         });
+     }
+
+     private async Task MarkVisibleMessagesAsReadAsync()
+     {
+         var unreadMessages = Messages
+             .Where(m => m.Receiver == CurrentUser && !m.IsRead)
+             .ToList();
+         
+         foreach (var message in unreadMessages)
+         {
+             await ChatService.MarkAsReadAsync(message.Id, CurrentUser);
+         }
+     }
+
      private async Task ScrollToBottom()
      {
           await Task.Delay(100);
@@ -178,6 +211,7 @@ public partial class ChatWindow : ComponentBase
           ChatService.MessagesLoaded -= OnMessagesLoaded;
           ChatService.UserTyping -= OnUserTyping;
           ChatService.UserStoppedTyping -= OnUserStoppedTyping;
+          ChatService.MessageRead -= OnMessageRead;
 
           // Leave chat
           await ChatService.LeaveChatAsync(CurrentUser);

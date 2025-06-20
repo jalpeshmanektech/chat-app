@@ -17,6 +17,7 @@ public class ChatService : IAsyncDisposable
     public event Action<string>? UserTyping;
     public event Action<string>? UserStoppedTyping;
     public event Action<List<ChatMessage>>? MessagesLoaded;
+    public event Action<string>? MessageRead;
 
     public ChatService(ILogger<ChatService> logger, NavigationManager navigationManager)
     {
@@ -76,6 +77,12 @@ public class ChatService : IAsyncDisposable
         {
             _logger.LogInformation("Loaded {Count} messages from SignalR", messages.Count);
             MessagesLoaded?.Invoke(messages);
+        });
+
+        _hubConnection.On<string>("MessageRead", (messageId) =>
+        {
+            _logger.LogInformation("Message {MessageId} marked as read", messageId);
+            MessageRead?.Invoke(messageId);
         });
 
         _hubConnection.Closed += async (error) =>
