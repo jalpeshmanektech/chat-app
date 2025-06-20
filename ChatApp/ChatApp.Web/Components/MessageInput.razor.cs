@@ -12,13 +12,14 @@ public partial class MessageInput : ComponentBase, IDisposable
      [Inject] private ChatService ChatService { get; set; } = default!;
      [Inject] private IJSRuntime JS { get; set; } = default!;
      [Inject] private HttpClient Http { get; set; } = default!;
-     [Parameter] public Func<string, string?, Task>? OnSendMessage { get; set; }
+     [Parameter] public Func<string, string?, string?, string?, Task>? OnSendMessage { get; set; }
      [Parameter] public Func<Task>? OnTyping { get; set; }
      [Parameter] public Func<Task>? OnStopTyping { get; set; }
      private string MessageText { get; set; } = string.Empty;
      private ElementReference messageInput;
      private IBrowserFile? selectedFile;
      private Timer? typingTimer;
+     private string? fileValidationError;
 
      protected override void OnInitialized()
      {
@@ -31,11 +32,37 @@ public partial class MessageInput : ComponentBase, IDisposable
      private void OnFileSelected(InputFileChangeEventArgs e)
      {
           selectedFile = e.File;
+          fileValidationError = null;
+
+          // Validate file type
+          if (!FileTypeHelper.IsFileTypeAllowed(selectedFile.Name))
+          {
+               fileValidationError = $"File type not allowed. Allowed types: {FileTypeHelper.GetAllowedExtensionsString()}";
+               selectedFile = null;
+               return;
+          }
+
+          // Validate file size
+          if (!FileTypeHelper.IsFileSizeAllowed(selectedFile.Size))
+          {
+               fileValidationError = "File size too large. Maximum size is 10MB.";
+               selectedFile = null;
+               return;
+          }
+
+          Console.WriteLine($"File selected: {selectedFile.Name}, Size: {selectedFile.Size}, Type: {FileTypeHelper.GetFileTypeFromExtension(selectedFile.Name)}");
      }
 
-     private async Task<string?> UploadImageAsync()
+     private void ClearSelectedFile()
+     {
+          selectedFile = null;
+          fileValidationError = null;
+     }
+
+     private async Task<string?> UploadFileAsync()
      {
           if (selectedFile == null) return null;
+          
           var content = new MultipartFormDataContent();
           content.Add(new StreamContent(selectedFile.OpenReadStream(10_000_000)), "file", selectedFile.Name);
           var response = await Http.PostAsync("https://localhost:7042/api/upload", content);
@@ -52,21 +79,26 @@ public partial class MessageInput : ComponentBase, IDisposable
           Console.WriteLine("SendMessage called");
           Console.WriteLine($"MessageText: '{MessageText}'");
 
-          string? imageUrl = null;
+          string? fileUrl = null;
+          string? fileName = null;
+          string? fileType = null;
+
           if (selectedFile != null)
           {
-               imageUrl = await UploadImageAsync();
+               fileUrl = await UploadFileAsync();
+               fileName = selectedFile.Name;
+               fileType = FileTypeHelper.GetFileTypeFromExtension(selectedFile.Name);
                selectedFile = null;
           }
 
-          if (!string.IsNullOrWhiteSpace(MessageText?.Trim()) || imageUrl != null)
+          if (!string.IsNullOrWhiteSpace(MessageText?.Trim()) || fileUrl != null)
           {
                var message = MessageText.Trim();
                MessageText = string.Empty;
 
                if (OnSendMessage != null)
                {
-                    await OnSendMessage(message, imageUrl);
+                    await OnSendMessage(message, fileUrl, fileName, fileType);
                }
                else
                {
@@ -78,7 +110,7 @@ public partial class MessageInput : ComponentBase, IDisposable
           }
           else
           {
-               Console.WriteLine("Message is empty or whitespace and no image");
+               Console.WriteLine("Message is empty or whitespace and no file");
           }
      }
 

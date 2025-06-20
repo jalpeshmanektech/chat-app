@@ -110,12 +110,12 @@ public class ChatService : IAsyncDisposable
         }
     }
 
-    public async Task SendMessageAsync(string sender, string receiver, string message, string? imageUrl)
+    public async Task SendMessageAsync(string sender, string receiver, string message, string? fileUrl, string? fileName, string? fileType)
     {
-        _logger.LogInformation("Sending message: {Sender} -> {Receiver}: {Content}, ImageUrl: {ImageUrl}", sender, receiver, message, imageUrl);
+        _logger.LogInformation("Sending message: {Sender} -> {Receiver}: {Content}, FileUrl: {FileUrl}, FileName: {FileName}, FileType: {FileType}", sender, receiver, message, fileUrl, fileName, fileType);
         if (_hubConnection?.State == HubConnectionState.Connected)
         {
-            await _hubConnection.SendAsync("SendMessage", sender, receiver, message, imageUrl);
+            await _hubConnection.SendAsync("SendMessage", sender, receiver, message, fileUrl, fileName, fileType);
             _logger.LogInformation("SendMessage sent to hub");
         }
         else

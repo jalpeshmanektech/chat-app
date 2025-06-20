@@ -811,3 +811,37 @@ input, textarea {
           transform: translateX(0);
      }
 }
+
+.selected-file {
+     display: flex;
+     align-items: center;
+     background: var(--attachment-background);
+     border-radius: 6px;
+     padding: 6px 10px;
+     margin-right: 10px;
+     font-size: 0.9em;
+     color: var(--text-color);
+     border: 1px solid var(--border-color);
+}
+
+.clear-file-btn {
+     background: none;
+     border: none;
+     color: var(--text-secondary);
+     cursor: pointer;
+     margin-left: 8px;
+     font-size: 1.2em;
+     padding: 0;
+     width: 20px;
+     height: 20px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     border-radius: 50%;
+     transition: background 0.15s, color 0.15s;
+}
+
+.clear-file-btn:hover {
+     background: var(--error-color);
+     color: #fff;
+}

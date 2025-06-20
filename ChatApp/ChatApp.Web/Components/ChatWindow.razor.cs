@@ -45,12 +45,12 @@ public partial class ChatWindow : ComponentBase
           await ChatService.JoinChatAsync(CurrentUser);
      }
 
-     private async Task SendMessage(string message, string? imageUrl)
+     private async Task SendMessage(string message, string? fileUrl, string? fileName, string? fileType)
      {
-          Console.WriteLine($"ChatWindow.SendMessage called with: '{message}', imageUrl: '{imageUrl}'");
-          if (!string.IsNullOrWhiteSpace(message) || !string.IsNullOrEmpty(imageUrl))
+          Console.WriteLine($"ChatWindow.SendMessage called with: '{message}', fileUrl: '{fileUrl}', fileName: '{fileName}', fileType: '{fileType}'");
+          if (!string.IsNullOrWhiteSpace(message) || !string.IsNullOrEmpty(fileUrl))
           {
-               await ChatService.SendMessageAsync(CurrentUser, CurrentChatUser, message, imageUrl);
+               await ChatService.SendMessageAsync(CurrentUser, CurrentChatUser, message, fileUrl, fileName, fileType);
           }
      }
 

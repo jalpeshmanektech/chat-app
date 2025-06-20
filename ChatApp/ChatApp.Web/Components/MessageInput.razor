@@ -1,21 +1,12 @@
 <div class="message-input">
      <div class="message-input__container">
           <div class="message-input__actions">
-               <button title="Add file" class="message-input__action">
+               <label class="inputfile-label" title="Attach file">
                     <span>📎</span>
-               </button>
-               <label class="inputfile-label" title="Attach image">
-                    <span>🖼️</span>
-                    <InputFile OnChange="OnFileSelected" accept="image/*" class="inputfile-hidden" />
+                    <InputFile OnChange="OnFileSelected" accept=".jpg,.jpeg,.png,.gif,.mp4,.pdf,.txt" class="inputfile-hidden" />
                </label>
-               <button title="Attach video" class="message-input__action">
-                    <span>🎥</span>
-               </button>
-               <button title="Attach PDF" class="message-input__action">
-                    <span>📄</span>
-               </button>
-               <button title="Attach GIF" class="message-input__action">
-                    <span>GIF</span>
+               <button title="Emoji" class="message-input__action">
+                    <span>😊</span>
                </button>
           </div>
           <div class="message-input__field-container">
@@ -31,15 +22,18 @@
           </div>
 
           <div class="message-input__actions">
-               <button title="Emoji" class="message-input__action">
-                    <span>😊</span>
-               </button>
-
+               @if (selectedFile != null)
+               {
+                    <div class="selected-file">
+                         <span>📎 @selectedFile.Name</span>
+                         <button type="button" @onclick="ClearSelectedFile" class="clear-file-btn">×</button>
+                    </div>
+               }
 
                <button title="Send"
                        class="message-input__send"
                        @onclick="SendMessage"
-                       disabled="@(!string.IsNullOrWhiteSpace(MessageText?.Trim()) || selectedFile == null)">
+                       disabled="@(string.IsNullOrWhiteSpace(MessageText?.Trim()) && selectedFile == null)">
                     <span>➡️</span>
                </button>
           </div>
