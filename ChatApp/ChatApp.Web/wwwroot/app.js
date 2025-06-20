@@ -1,5 +1,6 @@
 // Chat App JavaScript Functions
 
+
 // Auto-resize textarea
 window.autoResizeTextarea = function (element) {
     element.style.height = 'auto';
@@ -155,3 +156,19 @@ window.isDocumentFile = function (filename) {
 window.triggerFileInput = function (element) {
     element.click();
 }; 
+
+window.emojiInterop = {
+     showPicker: function (dotNetRef) {
+          const container = document.getElementById('emoji-picker-container');
+          if (!container.firstChild) {
+               const picker = document.createElement('emoji-picker');
+               picker.addEventListener('emoji-click', event => {
+                    dotNetRef.invokeMethodAsync('ReceiveEmoji', event.detail.unicode);
+                    container.style.display = 'none';
+               });
+               container.appendChild(picker);
+          }
+
+          container.style.display = container.style.display === 'none' ? 'block' : 'none';
+     }
+};

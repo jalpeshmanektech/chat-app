@@ -1,7 +1,7 @@
 using ChatApp.Web.Services;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using System.Text.Json;
 
@@ -17,16 +17,30 @@ public partial class MessageInput : ComponentBase, IDisposable
      [Parameter] public Func<Task>? OnStopTyping { get; set; }
      private string MessageText { get; set; } = string.Empty;
      private ElementReference messageInput;
+     private DotNetObjectReference<MessageInput>? dotNetHelper;
      private IBrowserFile? selectedFile;
      private Timer? typingTimer;
      private string? fileValidationError;
 
      protected override void OnInitialized()
      {
+          dotNetHelper = DotNetObjectReference.Create(this);
           Console.WriteLine("MessageInput component initialized");
           Console.WriteLine($"OnSendMessage is null: {OnSendMessage == null}");
           Console.WriteLine($"OnTyping is null: {OnTyping == null}");
           Console.WriteLine($"OnStopTyping is null: {OnStopTyping == null}");
+     }
+
+     private async Task ShowEmojiPicker()
+     {
+          await JS.InvokeVoidAsync("emojiInterop.showPicker", dotNetHelper);
+     }
+
+     [JSInvokable]
+     public Task ReceiveEmoji(string emoji)
+     {
+          MessageText += emoji;
+          return Task.CompletedTask;
      }
 
      private void OnFileSelected(InputFileChangeEventArgs e)
@@ -34,7 +48,6 @@ public partial class MessageInput : ComponentBase, IDisposable
           selectedFile = e.File;
           fileValidationError = null;
 
-          // Validate file type
           if (!FileTypeHelper.IsFileTypeAllowed(selectedFile.Name))
           {
                fileValidationError = $"File type not allowed. Allowed types: {FileTypeHelper.GetAllowedExtensionsString()}";
@@ -42,7 +55,6 @@ public partial class MessageInput : ComponentBase, IDisposable
                return;
           }
 
-          // Validate file size
           if (!FileTypeHelper.IsFileSizeAllowed(selectedFile.Size))
           {
                fileValidationError = "File size too large. Maximum size is 10MB.";
@@ -67,7 +79,7 @@ public partial class MessageInput : ComponentBase, IDisposable
      private async Task<string?> UploadFileAsync()
      {
           if (selectedFile == null) return null;
-          
+
           var content = new MultipartFormDataContent();
           content.Add(new StreamContent(selectedFile.OpenReadStream(10_000_000)), "file", selectedFile.Name);
           var response = await Http.PostAsync("https://localhost:7042/api/upload", content);
@@ -175,12 +187,12 @@ public partial class MessageInput : ComponentBase, IDisposable
           }
           catch
           {
-               // Ignore JS errors
           }
      }
 
      public void Dispose()
      {
           typingTimer?.Dispose();
+          dotNetHelper?.Dispose();
      }
-} 
+}

@@ -5,7 +5,8 @@
                     <span>📎</span>
                     <InputFile OnChange="OnFileSelected" accept=".jpg,.jpeg,.png,.gif,.mp4,.pdf,.txt" class="inputfile-hidden" />
                </label>
-               <button title="Emoji" class="message-input__action">
+               <button title="Emoji" class="message-input__action" @onclick="ShowEmojiPicker">
+                    <div id="emoji-picker-container" style="position: absolute; display: none;"></div>
                     <span>😊</span>
                </button>
           </div>
