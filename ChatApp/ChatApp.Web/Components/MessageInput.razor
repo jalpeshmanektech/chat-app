@@ -38,4 +38,10 @@
                </button>
           </div>
      </div>
+     @if (!string.IsNullOrEmpty(fileValidationError))
+     {
+         <div class="file-validation-error">
+             @fileValidationError
+         </div>
+     }
 </div>

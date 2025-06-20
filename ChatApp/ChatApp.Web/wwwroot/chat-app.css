@@ -845,3 +845,12 @@ input, textarea {
      background: var(--error-color);
      color: #fff;
 }
+
+.file-validation-error {
+     color: var(--error-color);
+     font-size: 0.9em;
+     padding: 5px 15px;
+     text-align: center;
+     background-color: rgba(255, 51, 51, 0.1);
+     border-top: 1px solid var(--border-color);
+}
