@@ -99,8 +99,7 @@ public partial class MessageInput : ComponentBase, IDisposable
 
           var messageToSend = MessageText.Trim();
           MessageText = string.Empty;
-          await InvokeAsync(StateHasChanged);
-
+          StateHasChanged();
           string? fileUrl = null;
           string? fileName = null;
           string? fileType = null;

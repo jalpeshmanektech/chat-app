@@ -11,8 +11,8 @@
                </button>
           </div>
           <div class="message-input__field-container">
-               <textarea @bind="@MessageText"
-                         @bind:event="oninput"
+               <textarea @bind-value="MessageText"
+                         @bind-value:event="oninput"
                          @onkeydown="OnKeyDown"
                          @onkeyup="OnKeyUp"
                          placeholder="Type a message..."
@@ -41,9 +41,9 @@
      </div>
      @if (!string.IsNullOrEmpty(fileValidationError))
      {
-         <div class="file-validation-error">
-             <span>@fileValidationError</span>
-             <button @onclick="ClearFileValidationError" class="close-error-btn" title="Close">&times;</button>
-         </div>
+          <div class="file-validation-error">
+               <span>@fileValidationError</span>
+               <button @onclick="ClearFileValidationError" class="close-error-btn" title="Close">&times;</button>
+          </div>
      }
 </div>
