@@ -144,7 +144,8 @@
                    .Where(m => (m.SenderId == CurrentUser && m.ReceiverId == CurrentChatUser) ||
                                (m.SenderId == CurrentChatUser && m.ReceiverId == CurrentUser))
                    .OrderBy(m => m.Timestamp)
-                   .Select(m => new ChatMessage {
+                   .Select(m => new ChatMessage
+                   {
                         Id = m.Id.ToString(),
                         Sender = m.SenderId,
                         Receiver = m.ReceiverId,
