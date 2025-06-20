@@ -8,7 +8,7 @@ public class ChatHub : Hub
 {
 
      private readonly ApplicationDbContext _db;
-     private static readonly Dictionary<string, string> _userConnections = new();
+     private static readonly Dictionary<string, string> _userConnections = new(); // username -> connectionId
 
      public ChatHub(ApplicationDbContext db)
      {
@@ -127,15 +127,25 @@ public class ChatHub : Hub
           }
      }
 
+     public override async Task OnConnectedAsync()
+     {
+         var userName = Context.User?.Identity?.Name;
+         if (!string.IsNullOrEmpty(userName))
+         {
+             _userConnections[userName] = Context.ConnectionId;
+             await Clients.All.SendAsync("UserStatusChanged", userName, true);
+         }
+         await base.OnConnectedAsync();
+     }
+
      public override async Task OnDisconnectedAsync(Exception? exception)
      {
-          var username = _userConnections.FirstOrDefault(x => x.Value == Context.ConnectionId).Key;
-          if (username != null)
-          {
-               _userConnections.Remove(username);
-               await Clients.All.SendAsync("UserLeft", username);
-          }
-
-          await base.OnDisconnectedAsync(exception);
+         var userName = _userConnections.FirstOrDefault(x => x.Value == Context.ConnectionId).Key;
+         if (!string.IsNullOrEmpty(userName))
+         {
+             _userConnections.Remove(userName);
+             await Clients.All.SendAsync("UserStatusChanged", userName, false);
+         }
+         await base.OnDisconnectedAsync(exception);
      }
 }

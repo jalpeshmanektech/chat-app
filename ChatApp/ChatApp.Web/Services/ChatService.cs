@@ -18,6 +18,7 @@ public class ChatService : IAsyncDisposable
     public event Action<string>? UserStoppedTyping;
     public event Action<List<ChatMessage>>? MessagesLoaded;
     public event Action<string>? MessageRead;
+    public event Action<string, bool>? UserStatusChanged;
 
     public ChatService(ILogger<ChatService> logger, NavigationManager navigationManager)
     {
@@ -83,6 +84,12 @@ public class ChatService : IAsyncDisposable
         {
             _logger.LogInformation("Message {MessageId} marked as read", messageId);
             MessageRead?.Invoke(messageId);
+        });
+
+        _hubConnection.On<string, bool>("UserStatusChanged", (userName, isOnline) =>
+        {
+            _logger.LogInformation("User status changed: {UserName} isOnline={IsOnline}", userName, isOnline);
+            UserStatusChanged?.Invoke(userName, isOnline);
         });
 
         _hubConnection.Closed += async (error) =>

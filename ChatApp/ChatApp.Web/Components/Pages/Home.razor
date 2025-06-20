@@ -33,6 +33,7 @@
      [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
      [Inject] private UserManager<ApplicationUser> UserManager { get; set; } = default!;
      [Inject] private ApplicationDbContext DbContext { get; set; } = default!;
+     [Inject] private ChatService ChatService { get; set; } = default!;
 
      private string CurrentUser { get; set; } = null!;
      private string CurrentChatUser { get; set; } = null!;
@@ -88,14 +89,26 @@
                CurrentChatUser = ChatUsers.First().Name;
                await LoadCurrentChatMessages();
           }
+
+          ChatService.UserStatusChanged += (userName, isOnline) =>
+          {
+               var user = ChatUsers.FirstOrDefault(u => u.Name == userName);
+               if (user != null)
+               {
+                    user.IsOnline = isOnline;
+                    InvokeAsync(StateHasChanged);
+               }
+          };
      }
 
-     private void OnMessageActivity(ChatMessage message)
+     private async void OnMessageActivity(ChatMessage message)
      {
           UpdateChatListWithMessage(message);
+          await LoadCurrentChatMessages();
+          await InvokeAsync(StateHasChanged);
      }
 
-     private async void UpdateChatListWithMessage(ChatMessage message)
+     private void UpdateChatListWithMessage(ChatMessage message)
      {
           var chatUser = ChatUsers.FirstOrDefault(u => u.Name == (message.Sender == CurrentUser ? message.Receiver : message.Sender));
           if (chatUser != null)
@@ -115,7 +128,6 @@
                     return lastMsg?.Timestamp ?? DateTime.MinValue;
                })
                .ToList();
-          await InvokeAsync(StateHasChanged);
      }
 
      private void SetCurrentChatUser(string userName)
