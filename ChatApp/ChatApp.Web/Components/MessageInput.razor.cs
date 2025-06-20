@@ -40,6 +40,7 @@ public partial class MessageInput : ComponentBase, IDisposable
      public Task ReceiveEmoji(string emoji)
      {
           MessageText += emoji;
+          StateHasChanged();
           return Task.CompletedTask;
      }
 
@@ -93,8 +94,12 @@ public partial class MessageInput : ComponentBase, IDisposable
 
      private async Task SendMessage()
      {
-          Console.WriteLine("SendMessage called");
-          Console.WriteLine($"MessageText: '{MessageText}'");
+          if (string.IsNullOrWhiteSpace(MessageText?.Trim()) && selectedFile == null)
+               return;
+
+          var messageToSend = MessageText.Trim();
+          MessageText = string.Empty;
+          await InvokeAsync(StateHasChanged);
 
           string? fileUrl = null;
           string? fileName = null;
@@ -108,27 +113,12 @@ public partial class MessageInput : ComponentBase, IDisposable
                selectedFile = null;
           }
 
-          if (!string.IsNullOrWhiteSpace(MessageText?.Trim()) || fileUrl != null)
+          if (OnSendMessage != null)
           {
-               var message = MessageText.Trim();
-               MessageText = string.Empty;
-
-               if (OnSendMessage != null)
-               {
-                    await OnSendMessage(message, fileUrl, fileName, fileType);
-               }
-               else
-               {
-                    Console.WriteLine("OnSendMessage is null!");
-               }
-
-               await StopTypingIndicator();
-               await AutoResizeTextarea();
+               await OnSendMessage(messageToSend, fileUrl, fileName, fileType);
           }
-          else
-          {
-               Console.WriteLine("Message is empty or whitespace and no file");
-          }
+          await StopTypingIndicator();
+          await AutoResizeTextarea();
      }
 
      private async Task OnKeyDown(KeyboardEventArgs e)

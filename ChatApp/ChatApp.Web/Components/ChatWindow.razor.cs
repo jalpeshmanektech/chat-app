@@ -14,6 +14,7 @@ public partial class ChatWindow : ComponentBase
      [Parameter] public string CurrentUser { get; set; } = null!;
      [Parameter] public string CurrentChatUser { get; set; } = null!;
      [Parameter] public bool IsOnline { get; set; } = true;
+     [Parameter] public EventCallback<ChatMessage> OnMessageActivity { get; set; }
      private List<ChatMessage> Messages { get; set; } = new();
      private bool IsTyping { get; set; } = false;
      private ElementReference messagesContainer;
@@ -89,6 +90,10 @@ public partial class ChatWindow : ComponentBase
                         ChatService.MarkAsReadAsync(message.Id, CurrentUser);
                     }
                });
+               if (OnMessageActivity.HasDelegate)
+               {
+                    await InvokeAsync(() => OnMessageActivity.InvokeAsync(message));
+               }
           }
           else
           {
@@ -118,6 +123,10 @@ public partial class ChatWindow : ComponentBase
                StateHasChanged();
                ScrollToBottom();
           });
+          if (OnMessageActivity.HasDelegate)
+          {
+               await InvokeAsync(() => OnMessageActivity.InvokeAsync(message)); 
+          }
      }
 
      private async void OnMessagesLoaded(List<ChatMessage> messages)

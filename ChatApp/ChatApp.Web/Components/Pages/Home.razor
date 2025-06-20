@@ -11,7 +11,10 @@
           <div class="chat-app">
                <ChatList OnUserSelected="SetCurrentChatUser" Users="ChatUsers" />
                <div class="chat-app__main">
-                    <ChatWindow CurrentUser="@CurrentUser" CurrentChatUser="@CurrentChatUser" IsOnline="true" />
+                    <ChatWindow CurrentUser="@CurrentUser"
+                                CurrentChatUser="@CurrentChatUser"
+                                IsOnline="true"
+                                OnMessageActivity="OnMessageActivity" />
                </div>
                <div class="chat-app__sidebar">
                     <UserSidebar CurrentChatUserVM="@SelectedChatUser" ChatMessages="@CurrentChatMessages" />
@@ -85,6 +88,34 @@
                CurrentChatUser = ChatUsers.First().Name;
                await LoadCurrentChatMessages();
           }
+     }
+
+     private void OnMessageActivity(ChatMessage message)
+     {
+          UpdateChatListWithMessage(message);
+     }
+
+     private async void UpdateChatListWithMessage(ChatMessage message)
+     {
+          var chatUser = ChatUsers.FirstOrDefault(u => u.Name == (message.Sender == CurrentUser ? message.Receiver : message.Sender));
+          if (chatUser != null)
+          {
+               chatUser.LastMessage = message.Content;
+               chatUser.TimeAgo = GetTimeAgo(message.Timestamp);
+          }
+          // Sort by latest message timestamp (descending)
+          ChatUsers = ChatUsers
+               .OrderByDescending(u =>
+               {
+                    var lastMsg = DbContext.Messages
+                         .Where(m => (m.SenderId == CurrentUser && m.ReceiverId == u.Name) ||
+                                     (m.SenderId == u.Name && m.ReceiverId == CurrentUser))
+                         .OrderByDescending(m => m.Timestamp)
+                         .FirstOrDefault();
+                    return lastMsg?.Timestamp ?? DateTime.MinValue;
+               })
+               .ToList();
+          await InvokeAsync(StateHasChanged);
      }
 
      private void SetCurrentChatUser(string userName)
