@@ -17,6 +17,7 @@ public partial class MessageInput : ComponentBase, IDisposable
      [Parameter] public Func<Task>? OnStopTyping { get; set; }
      private string MessageText { get; set; } = string.Empty;
      private ElementReference messageInput;
+     private ElementReference emojiButton;
      private DotNetObjectReference<MessageInput>? dotNetHelper;
      private IBrowserFile? selectedFile;
      private Timer? typingTimer;
@@ -33,7 +34,7 @@ public partial class MessageInput : ComponentBase, IDisposable
 
      private async Task ShowEmojiPicker()
      {
-          await JS.InvokeVoidAsync("emojiInterop.showPicker", dotNetHelper);
+          await JS.InvokeVoidAsync("emojiInterop.showPicker", dotNetHelper, emojiButton);
      }
 
      [JSInvokable]

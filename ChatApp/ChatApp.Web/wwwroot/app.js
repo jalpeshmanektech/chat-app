@@ -158,8 +158,9 @@ window.triggerFileInput = function (element) {
 }; 
 
 window.emojiInterop = {
-     showPicker: function (dotNetRef) {
+     showPicker: function (dotNetRef, button) {
           const container = document.getElementById('emoji-picker-container');
+          
           if (!container.firstChild) {
                const picker = document.createElement('emoji-picker');
                picker.addEventListener('emoji-click', event => {
@@ -169,6 +170,16 @@ window.emojiInterop = {
                container.appendChild(picker);
           }
 
-          container.style.display = container.style.display === 'none' ? 'block' : 'none';
+          if (container.style.display === 'none' || container.style.display === '') {
+               const buttonRect = button.getBoundingClientRect();
+               const containerRect = container.getBoundingClientRect();
+
+               container.style.display = 'block';
+               // Position picker above the button.
+               container.style.bottom = (window.innerHeight - buttonRect.top) + 'px';
+               container.style.left = buttonRect.left + 'px';
+          } else {
+               container.style.display = 'none';
+          }
      }
 };

@@ -1,12 +1,12 @@
-<div class="message-input">
+<div class="message-input" style="position: relative;">
+     <div id="emoji-picker-container" style="position: absolute; z-index: 10; display: none;"></div>
      <div class="message-input__container">
           <div class="message-input__actions">
                <label class="inputfile-label" title="Attach file">
                     <span>📎</span>
                     <InputFile OnChange="OnFileSelected" accept=".jpg,.jpeg,.png,.gif,.mp4,.pdf,.txt" class="inputfile-hidden" />
                </label>
-               <button title="Emoji" class="message-input__action" @onclick="ShowEmojiPicker">
-                    <div id="emoji-picker-container" style="position: absolute; display: none;"></div>
+               <button @ref="emojiButton" title="Emoji" class="message-input__action" @onclick="ShowEmojiPicker">
                     <span>😊</span>
                </button>
           </div>
