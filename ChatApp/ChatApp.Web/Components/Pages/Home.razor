@@ -10,7 +10,7 @@
 <AuthorizeView>
      <Authorized>
           <div class="chat-app">
-               <ChatList OnUserSelected="SetCurrentChatUser" Users="ChatUsers" />
+               <ChatList OnUserSelected="SetCurrentChatUser" Users="ChatUsers" Messages="AllMessages" />
                <div class="chat-app__main">
                     <ChatWindow CurrentUser="@CurrentUser"
                                 CurrentChatUser="@CurrentChatUser"
@@ -40,6 +40,7 @@
      private string CurrentChatUser { get; set; } = null!;
      private List<ChatUserVM> ChatUsers { get; set; } = new();
      private List<ChatMessage> CurrentChatMessages { get; set; } = new();
+     private List<ChatMessage> AllMessages { get; set; } = new();
      private ChatUserVM? SelectedChatUser => ChatUsers.FirstOrDefault(u => u.Name == CurrentChatUser);
 
      protected override async Task OnInitializedAsync()
@@ -141,10 +142,7 @@
      {
           if (!string.IsNullOrEmpty(CurrentUser) && !string.IsNullOrEmpty(CurrentChatUser))
           {
-               CurrentChatMessages = DbContext.Messages
-                   .Where(m => (m.SenderId == CurrentUser && m.ReceiverId == CurrentChatUser) ||
-                               (m.SenderId == CurrentChatUser && m.ReceiverId == CurrentUser))
-                   .OrderBy(m => m.Timestamp)
+               AllMessages = DbContext.Messages
                    .Select(m => new ChatMessage
                    {
                         Id = m.Id.ToString(),
@@ -158,6 +156,10 @@
                         FileType = m.FileType
                    })
                    .ToList();
+               CurrentChatMessages = AllMessages
+                   .Where(m => (m.Sender == CurrentUser && m.Receiver == CurrentChatUser) ||
+                               (m.Sender == CurrentChatUser && m.Receiver == CurrentUser))
+                   .OrderBy(m => m.Timestamp).ToList();
           }
           else
           {

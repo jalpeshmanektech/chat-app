@@ -160,7 +160,7 @@ window.triggerFileInput = function (element) {
 window.emojiInterop = {
      showPicker: function (dotNetRef, button) {
           const container = document.getElementById('emoji-picker-container');
-          
+
           if (!container.firstChild) {
                const picker = document.createElement('emoji-picker');
                picker.addEventListener('emoji-click', event => {
@@ -171,13 +171,16 @@ window.emojiInterop = {
           }
 
           if (container.style.display === 'none' || container.style.display === '') {
-               const buttonRect = button.getBoundingClientRect();
-               const containerRect = container.getBoundingClientRect();
-
                container.style.display = 'block';
-               // Position picker above the button.
-               container.style.bottom = (window.innerHeight - buttonRect.top) + 'px';
-               container.style.left = buttonRect.left + 'px';
+
+               const inputContainer = button.closest('.message-input__container');
+               const parent = button.closest('.message-input');
+               const buttonRect = button.getBoundingClientRect();
+               const parentRect = parent.getBoundingClientRect();
+
+               // Position picker above the input bar.
+               container.style.bottom = (inputContainer.offsetHeight + 5) + 'px'; // 5px margin
+               container.style.left = (buttonRect.left - parentRect.left) + 'px';
           } else {
                container.style.display = 'none';
           }

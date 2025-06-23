@@ -10,6 +10,7 @@ namespace ChatApp.Web.Components;
 public partial class ChatList : ComponentBase
 {
      [Parameter] public List<ChatUserVM> Users { get; set; } = new();
+     [Parameter] public List<ChatMessage> Messages { get; set; } = new();
      [Parameter] public EventCallback<string> OnUserSelected { get; set; }
      private string searchTerm = string.Empty;
 
@@ -18,8 +19,9 @@ public partial class ChatList : ComponentBase
              ? Users
              : Users.Where(u =>
                  u.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                 u.LastMessage.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
-
+                 Messages.Any(m =>
+                     (m.Sender == u.Name || m.Receiver == u.Name) &&
+                     m.Content.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)));
      private Task HandleUserSelected(string userName) => OnUserSelected.InvokeAsync(userName);
 
 } 

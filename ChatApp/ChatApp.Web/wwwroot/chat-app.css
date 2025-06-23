@@ -253,6 +253,21 @@ input, textarea {
                     color: var(--text-secondary);
                }
 
+.chat-list__search {
+     width: 100%;
+     padding: 0.5rem 0.75rem;
+     border-radius: 6px;
+     border: 1px solid var(--border-color);
+     background: var(--search-background);
+     color: var(--text-color);
+     margin-bottom: 1rem;
+     box-sizing: border-box;
+}
+
+     .chat-list__search::placeholder {
+          color: var(--text-secondary);
+     }
+
 .chat-list__item {
      padding: 15px 20px;
      display: flex;
