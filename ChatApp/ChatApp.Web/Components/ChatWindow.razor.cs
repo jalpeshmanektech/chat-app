@@ -38,9 +38,7 @@ public partial class ChatWindow : ComponentBase
           ChatService.UserTyping += OnUserTyping;
           ChatService.UserStoppedTyping += OnUserStoppedTyping;
           ChatService.MessageRead += OnMessageRead;
-
           await ChatService.StartAsync();
-
           await ChatService.JoinChatAsync(CurrentUser);
      }
 
@@ -188,9 +186,7 @@ public partial class ChatWindow : ComponentBase
           ChatService.UserTyping -= OnUserTyping;
           ChatService.UserStoppedTyping -= OnUserStoppedTyping;
           ChatService.MessageRead -= OnMessageRead;
-
           await ChatService.LeaveChatAsync(CurrentUser);
-
           await ChatService.DisposeAsync();
      }
 } 

@@ -34,7 +34,6 @@ namespace ChatApp.Web.Components.Pages
                     CurrentUser = "Unknown";
                }
 
-               // Load all users except the current user
                var dbUsers = UserManager.Users.ToList();
                ChatUsers = new List<ChatUserVM>();
 
@@ -63,7 +62,6 @@ namespace ChatApp.Web.Components.Pages
                     });
                }
 
-               // Set the first user as the default chat user
                if (ChatUsers.Any())
                {
                     CurrentChatUser = ChatUsers.First().Name;
@@ -96,7 +94,6 @@ namespace ChatApp.Web.Components.Pages
                     chatUser.LastMessage = message.Content;
                     chatUser.TimeAgo = GetTimeAgo(message.Timestamp);
                }
-               // Sort by latest message timestamp (descending)
                ChatUsers = ChatUsers
                     .OrderByDescending(u =>
                     {

@@ -128,7 +128,6 @@ public partial class MessageInput : ComponentBase, IDisposable
                await OnTyping();
           }
 
-          // Reset typing timer
           typingTimer?.Dispose();
           typingTimer = new Timer(async _ =>
           {
