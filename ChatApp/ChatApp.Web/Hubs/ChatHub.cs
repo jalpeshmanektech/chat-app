@@ -6,7 +6,6 @@ namespace ChatApp.Web.Hubs;
 
 public class ChatHub : Hub
 {
-
      private readonly ApplicationDbContext _db;
      private static readonly Dictionary<string, string> _userConnections = new(); // username -> connectionId
 
@@ -124,8 +123,6 @@ public class ChatHub : Hub
                          await Clients.Client(senderConnectionId).SendAsync("MessageRead", messageId);
                     }
                }
-
-
           }
      }
 

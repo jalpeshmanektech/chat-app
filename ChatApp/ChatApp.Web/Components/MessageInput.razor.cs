@@ -26,10 +26,6 @@ public partial class MessageInput : ComponentBase, IDisposable
      protected override void OnInitialized()
      {
           dotNetHelper = DotNetObjectReference.Create(this);
-          Console.WriteLine("MessageInput component initialized");
-          Console.WriteLine($"OnSendMessage is null: {OnSendMessage == null}");
-          Console.WriteLine($"OnTyping is null: {OnTyping == null}");
-          Console.WriteLine($"OnStopTyping is null: {OnStopTyping == null}");
      }
 
      private async Task ShowEmojiPicker()
@@ -63,8 +59,6 @@ public partial class MessageInput : ComponentBase, IDisposable
                selectedFile = null;
                return;
           }
-
-          Console.WriteLine($"File selected: {selectedFile.Name}, Size: {selectedFile.Size}, Type: {FileTypeHelper.GetFileTypeFromExtension(selectedFile.Name)}");
      }
 
      private void ClearSelectedFile()
@@ -121,21 +115,8 @@ public partial class MessageInput : ComponentBase, IDisposable
           await AutoResizeTextarea();
      }
 
-     //private async Task OnKeyDown(KeyboardEventArgs e)
-     //{
-     //     Console.WriteLine($"OnKeyDown: Key={e.Key}, Shift={e.ShiftKey}, Code={e.Code}");
-
-     //     if (e.Key == "Enter" && !e.ShiftKey)
-     //     {
-     //          await SendMessage();
-     //          MessageText = string.Empty ;
-     //          StateHasChanged();
-     //     }
-     //}
-
      private async Task OnKeyUp(KeyboardEventArgs e)
      {
-          Console.WriteLine($"OnKeyUp: Key={e.Key}");
           await StartTypingIndicator();
           await AutoResizeTextarea();
      }

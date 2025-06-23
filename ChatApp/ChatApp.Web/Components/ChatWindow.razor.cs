@@ -32,7 +32,6 @@ public partial class ChatWindow : ComponentBase
      }
      protected override async Task OnInitializedAsync()
      {
-          // Subscribe to chat events
           ChatService.MessageReceived += OnMessageReceived;
           ChatService.MessageSent += OnMessageSent;
           ChatService.MessagesLoaded += OnMessagesLoaded;
@@ -40,16 +39,13 @@ public partial class ChatWindow : ComponentBase
           ChatService.UserStoppedTyping += OnUserStoppedTyping;
           ChatService.MessageRead += OnMessageRead;
 
-          // Start SignalR connection
           await ChatService.StartAsync();
 
-          // Join chat
           await ChatService.JoinChatAsync(CurrentUser);
      }
 
      private async Task SendMessage(string message, string? fileUrl, string? fileName, string? fileType)
      {
-          Console.WriteLine($"ChatWindow.SendMessage called with: '{message}', fileUrl: '{fileUrl}', fileName: '{fileName}', fileType: '{fileType}'");
           if (!string.IsNullOrWhiteSpace(message) || !string.IsNullOrEmpty(fileUrl))
           {
                await ChatService.SendMessageAsync(CurrentUser, CurrentChatUser, message, fileUrl, fileName, fileType);
@@ -58,33 +54,25 @@ public partial class ChatWindow : ComponentBase
 
      private async Task OnTyping()
      {
-          Console.WriteLine("ChatWindow.OnTyping called");
           await ChatService.TypingAsync(CurrentUser, CurrentChatUser);
      }
 
      private async Task OnStopTyping()
      {
-          Console.WriteLine("ChatWindow.OnStopTyping called");
           await ChatService.StopTypingAsync(CurrentUser, CurrentChatUser);
      }
 
      private async void OnMessageReceived(ChatMessage message)
      {
-          Console.WriteLine($"OnMessageReceived called: {message.Sender} -> {message.Receiver}: {message.Content}");
-          Console.WriteLine($"Message ID: {message.Id}");
-          Console.WriteLine($"Current Messages count: {Messages.Count}");
-          
           if ((message.Sender == CurrentUser && message.Receiver == CurrentChatUser) ||
               (message.Sender == CurrentChatUser && message.Receiver == CurrentUser))
           {
                await InvokeAsync(() =>
                {
                     Messages.Add(message);
-                    Console.WriteLine($"Message added to list. New count: {Messages.Count}");
                     StateHasChanged();
                     ScrollToBottom();
 
-                    // If this message is from the current chat user, mark it as read
                     if (message.Receiver == CurrentUser)
                     {
                         ChatService.MarkAsReadAsync(message.Id, CurrentUser);
@@ -95,30 +83,15 @@ public partial class ChatWindow : ComponentBase
                     await InvokeAsync(() => OnMessageActivity.InvokeAsync(message));
                }
           }
-          else
-          {
-               Console.WriteLine("Message filtered out - not for current chat");
-          }
      }
 
      private async void OnMessageSent(ChatMessage message)
      {
-          Console.WriteLine($"OnMessageSent called: {message.Sender} -> {message.Receiver}: {message.Content}");
-          Console.WriteLine($"Message ID: {message.Id}");
-          Console.WriteLine($"Current Messages count: {Messages.Count}");
-          
-          // Message was sent successfully - add it to the local messages list
           await InvokeAsync(() =>
           {
-               // Only add if it's not already in the list (to avoid duplicates)
                if (!Messages.Any(m => m.Id == message.Id))
                {
                     Messages.Add(message);
-                    Console.WriteLine($"Message added to list. New count: {Messages.Count}");
-               }
-               else
-               {
-                    Console.WriteLine("Message already exists in list, skipping");
                }
                StateHasChanged();
                ScrollToBottom();
@@ -131,17 +104,12 @@ public partial class ChatWindow : ComponentBase
 
      private async void OnMessagesLoaded(List<ChatMessage> messages)
      {
-          Console.WriteLine($"OnMessagesLoaded called with {messages.Count} messages");
-          Console.WriteLine($"CurrentUser: {CurrentUser}, CurrentChatUser: {CurrentChatUser}");
-          
           await InvokeAsync(() =>
           {
                var filteredMessages = messages.Where(m =>
                    (m.Sender == CurrentUser && m.Receiver == CurrentChatUser) ||
                    (m.Sender == CurrentChatUser && m.Receiver == CurrentUser)
                ).ToList();
-               
-               Console.WriteLine($"Filtered to {filteredMessages.Count} messages for current chat");
                
                Messages = filteredMessages;
                StateHasChanged();
@@ -214,7 +182,6 @@ public partial class ChatWindow : ComponentBase
 
      public async ValueTask DisposeAsync()
      {
-          // Unsubscribe from events
           ChatService.MessageReceived -= OnMessageReceived;
           ChatService.MessageSent -= OnMessageSent;
           ChatService.MessagesLoaded -= OnMessagesLoaded;
@@ -222,7 +189,6 @@ public partial class ChatWindow : ComponentBase
           ChatService.UserStoppedTyping -= OnUserStoppedTyping;
           ChatService.MessageRead -= OnMessageRead;
 
-          // Leave chat
           await ChatService.LeaveChatAsync(CurrentUser);
 
           await ChatService.DisposeAsync();
