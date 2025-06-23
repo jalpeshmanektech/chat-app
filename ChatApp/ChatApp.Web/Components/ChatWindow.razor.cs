@@ -1,9 +1,7 @@
-using ChatApp.Web.Hubs;
 using ChatApp.Web.Services;
+using ChatApp.Web.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using Microsoft.AspNetCore.Components.Authorization;
-using ChatApp.Web.ViewModels;
 
 namespace ChatApp.Web.Components;
 
