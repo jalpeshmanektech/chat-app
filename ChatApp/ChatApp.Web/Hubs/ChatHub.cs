@@ -7,7 +7,7 @@ namespace ChatApp.Web.Hubs;
 public class ChatHub : Hub
 {
      private readonly ApplicationDbContext _db;
-     private static readonly Dictionary<string, string> _userConnections = new(); // username -> connectionId
+     private static readonly Dictionary<string, string> _userConnections = new(); 
 
      public ChatHub(ApplicationDbContext db)
      {
@@ -30,7 +30,6 @@ public class ChatHub : Hub
           _db.Messages.Add(dbMessage);
           await _db.SaveChangesAsync();
 
-          // Convert to ChatMessage for SignalR
           var chatMessage = new ChatMessage
           {
                Id = dbMessage.Id.ToString(),
@@ -44,13 +43,11 @@ public class ChatHub : Hub
                FileType = dbMessage.FileType,
           };
 
-          // Send to specific user if they're online
           if (_userConnections.TryGetValue(receiver, out var connectionId))
           {
                await Clients.Client(connectionId).SendAsync("ReceiveMessage", chatMessage);
           }
 
-          // Send back to sender for confirmation
           await Clients.Caller.SendAsync("MessageSent", chatMessage);
      }
 
@@ -60,7 +57,6 @@ public class ChatHub : Hub
           await Clients.All.SendAsync("UserStatusChanged", username, true);
           await Clients.All.SendAsync("UserJoined", username);
 
-          // Send recent messages to the user
           var recentDbMessages = _db.Messages
                .Where(m => m.SenderId == username || m.ReceiverId == username)
                .OrderByDescending(m => m.Timestamp)
@@ -68,7 +64,6 @@ public class ChatHub : Hub
                .Reverse()
                .ToList();
 
-          // Convert to ChatMessage for SignalR
           var chatMessages = recentDbMessages.Select(m => new ChatMessage
           {
                Id = m.Id.ToString(),
