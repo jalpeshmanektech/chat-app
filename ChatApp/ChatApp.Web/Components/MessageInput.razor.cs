@@ -120,16 +120,17 @@ public partial class MessageInput : ComponentBase, IDisposable
           await AutoResizeTextarea();
      }
 
-     private async Task OnKeyDown(KeyboardEventArgs e)
-     {
-          Console.WriteLine($"OnKeyDown: Key={e.Key}, Shift={e.ShiftKey}, Code={e.Code}");
+     //private async Task OnKeyDown(KeyboardEventArgs e)
+     //{
+     //     Console.WriteLine($"OnKeyDown: Key={e.Key}, Shift={e.ShiftKey}, Code={e.Code}");
 
-          if (e.Key == "Enter" && !e.ShiftKey)
-          {
-               Console.WriteLine("Enter pressed without Shift - calling SendMessage");
-               await SendMessage();
-          }
-     }
+     //     if (e.Key == "Enter" && !e.ShiftKey)
+     //     {
+     //          await SendMessage();
+     //          MessageText = string.Empty ;
+     //          StateHasChanged();
+     //     }
+     //}
 
      private async Task OnKeyUp(KeyboardEventArgs e)
      {
