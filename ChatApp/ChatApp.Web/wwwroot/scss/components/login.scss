@@ -1,0 +1,31 @@
+﻿.login-container {
+     display: flex;
+     gap: 20px;
+     justify-content: center;
+     align-items: center;
+     flex-direction: column;
+     max-width: 500px;
+     margin: auto;
+     width: 100%;
+     .login-form-wrapper {
+          padding: 40px;
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(10px);
+          border-radius: 20px;
+          width: 100%;
+     }
+}
+.form-floating {
+     display: flex;
+     flex-direction: column;
+     gap: 5px;
+     margin-top: 15px;
+     input {
+          padding: 10px;
+          border-radius: 6px;
+          border: 0;
+     }
+}
+.links-wrapper {
+     text-align: center;
+}

@@ -1,21 +1,4 @@
 ﻿/* ===== CSS VARIABLES (Custom Properties) ===== */
-:root {
-     --primary-color: #ff0000;
-     --background-dark: #1a1a1a;
-     --text-color: #ffffff;
-     --text-secondary: #999999;
-     --border-color: #333333;
-     --input-background: #2a2a2a;
-     --hover-color: #2d2d2d;
-     --message-bubble: #2a2a2a;
-     --online-status: #00ff00;
-     --error-color: #ff3333;
-     --chat-background: #1a1a1a;
-     --sidebar-background: #1f1f1f;
-     --message-time: #666666;
-     --attachment-background: #2f2f2f;
-     --search-background: #252525;
-}
 
 /* ===== RESET AND BASE STYLES ===== */
 * {
@@ -27,8 +10,8 @@
 html, body {
      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
      line-height: 1.5;
-     background: var(--background-dark);
-     color: var(--text-color);
+     background: $background-dark;
+     color: $text-color;
      height: 100%;
 }
 
@@ -77,11 +60,11 @@ input:focus, textarea:focus {
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-     background: var(--background-dark);
+     background: $background-dark;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-     background: var(--border-color);
+     background: $border-color;
      border-radius: 3px;
 }
 
@@ -142,19 +125,19 @@ input:focus, textarea:focus {
 .selected-file {
      display: flex;
      align-items: center;
-     background: var(--attachment-background);
+     background: $attachment-background;
      border-radius: 6px;
      padding: 6px 10px;
      margin-right: 10px;
      font-size: 0.9em;
-     color: var(--text-color);
-     border: 1px solid var(--border-color);
+     color: $text-color;
+     border: 1px solid $border-color;
 }
 
 .clear-file-btn {
      background: none;
      border: none;
-     color: var(--text-secondary);
+     color: $text-secondary;
      cursor: pointer;
      margin-left: 8px;
      font-size: 1.2em;
@@ -169,7 +152,7 @@ input:focus, textarea:focus {
 }
 
 .clear-file-btn:hover {
-     background: var(--error-color);
+     background: $error-color;
      color: #fff;
 }
 
@@ -177,17 +160,17 @@ input:focus, textarea:focus {
      display: flex;
      justify-content: space-between;
      align-items: center;
-     color: var(--error-color);
+     color: $error-color;
      font-size: 0.9em;
      padding: 5px 15px;
      background-color: rgba(255, 51, 51, 0.1);
-     border-top: 1px solid var(--border-color);
+     border-top: 1px solid $border-color;
 }
 
 .close-error-btn {
      background: none;
      border: none;
-     color: var(--error-color);
+     color: $error-color;
      cursor: pointer;
      font-size: 1.5em;
      line-height: 1;
@@ -200,6 +183,20 @@ input:focus, textarea:focus {
 .close-error-btn:hover {
      opacity: 1;
 }
-
-
+a {
+     color: $theme-color;
+}
+.btn {
+     background: $theme-color;
+     display: block;
+     padding: 10px;
+     color: #fff;
+     border: 0;
+     margin: 10px 0;
+     cursor: pointer;
+     border-radius: 6px;
+     &.btn-lg {
+          width: 100%;
+     }
+}
 
