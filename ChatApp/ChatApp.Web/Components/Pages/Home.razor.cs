@@ -20,7 +20,8 @@ namespace ChatApp.Web.Components.Pages
           private List<ChatMessage> CurrentChatMessages { get; set; } = new();
           private List<ChatMessage> AllMessages { get; set; } = new();
           private ChatUserVM? SelectedChatUser => ChatUsers.FirstOrDefault(u => u.Name == CurrentChatUser);
-
+          private bool IsChatWindow = false;
+          private bool IsSidebarActive = false;
           protected override async Task OnInitializedAsync()
           {
                var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -79,6 +80,18 @@ namespace ChatApp.Web.Components.Pages
                };
           }
 
+          private void OnBackFromChat()
+          {
+               IsChatWindow = false;
+               StateHasChanged();
+          }
+
+          private void OnSidebarToggle(bool flag)
+          {
+               IsSidebarActive = flag;
+               StateHasChanged();
+          }
+
           private async void OnMessageActivity(ChatMessage message)
           {
                UpdateChatListWithMessage(message);
@@ -110,6 +123,7 @@ namespace ChatApp.Web.Components.Pages
           private void SetCurrentChatUser(string userName)
           {
                CurrentChatUser = userName;
+               IsChatWindow = true;
                LoadCurrentChatMessages().GetAwaiter().GetResult();
           }
 

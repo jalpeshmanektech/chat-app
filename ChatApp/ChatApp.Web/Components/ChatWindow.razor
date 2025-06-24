@@ -6,6 +6,9 @@
 <div class="chat-window">
     <div class="chat-header">
         <div class="chat-header__info">
+             <div class="media-icon">
+                  <img src="/images/icons/arrow-left-solid.svg" @onclick="() => OnBack.InvokeAsync()" />
+             </div>
             <div class="avatar">
                 <img src="/images/no-profile.png" alt="User avatar" />
             </div>
@@ -26,6 +29,9 @@
                     }
                 </div>
             </div>
+        </div>
+        <div class="media-icon media-file-icon">
+             <img src="/images/icons/photo-video-solid.svg"  @onclick="() => OnUserSidebar.InvokeAsync(true)"/>
         </div>
     </div>
     

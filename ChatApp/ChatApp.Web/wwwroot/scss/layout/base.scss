@@ -25,7 +25,7 @@ button {
      margin-top: 20px;
      padding: 10px 0;
      width: 100%;
-     background: #2d88ff;
+     background: $theme-color;
      color: #fff;
      border: none;
      border-radius: 6px;
@@ -84,19 +84,36 @@ input:focus, textarea:focus {
      overflow: hidden;
      text-overflow: ellipsis;
 }
+.user-sidebar {
+     .media-icon {
+          display: none;
+     }
+}
 
 /* ===== RESPONSIVE DESIGN ===== */
-@media (max-width: 768px) {
+@media screen and (max-width: 991px) {
      .chat-app__sidebar {
           width: 100%;
           position: absolute;
           top: 0;
-          left: 0;
+          right: 0;
           height: 100%;
           z-index: 1000;
-          transform: translateX(-100%);
+          transform: translateX(100%);
           transition: transform 0.3s ease;
+          &.active-sidebar {
+               transform: translate(0);
+          }
      }
+     .user-sidebar {
+          .media-icon {
+               width: 24px;
+               display: flex;
+               align-self: flex-start;
+          }
+     }
+}
+@media (max-width: 768px) {
 
      .chat-app__sidebar--open {
           transform: translateX(0);
@@ -113,7 +130,6 @@ input:focus, textarea:focus {
           right: 0;
           height: 100%;
           z-index: 1000;
-          transform: translateX(100%);
           transition: transform 0.3s ease;
      }
 
@@ -184,7 +200,7 @@ input:focus, textarea:focus {
      opacity: 1;
 }
 a {
-     color: $theme-color;
+     color: $text-color;
 }
 .btn {
      background: $theme-color;

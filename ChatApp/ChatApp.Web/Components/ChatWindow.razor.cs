@@ -13,6 +13,8 @@ public partial class ChatWindow : ComponentBase
      [Parameter] public string CurrentChatUser { get; set; } = null!;
      [Parameter] public bool IsOnline { get; set; } = true;
      [Parameter] public EventCallback<ChatMessage> OnMessageActivity { get; set; }
+     [Parameter] public EventCallback OnBack { get; set; }
+     [Parameter] public EventCallback<bool> OnUserSidebar { get; set; }
      private List<ChatMessage> Messages { get; set; } = new();
      private bool IsTyping { get; set; } = false;
      private ElementReference messagesContainer;

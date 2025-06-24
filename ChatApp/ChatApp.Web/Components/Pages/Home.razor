@@ -11,14 +11,18 @@
      <Authorized>
           <div class="chat-app">
                <ChatList OnUserSelected="SetCurrentChatUser" Users="ChatUsers" Messages="AllMessages" />
-               <div class="chat-app__main">
+               <div class="chat-app__main @(IsChatWindow ? "active-chat" : "")">
                     <ChatWindow CurrentUser="@CurrentUser"
                                 CurrentChatUser="@CurrentChatUser"
                                 IsOnline="true"
-                                OnMessageActivity="OnMessageActivity" />
+                                OnMessageActivity="OnMessageActivity"
+                                OnBack="OnBackFromChat"
+                                OnUserSidebar="OnSidebarToggle"/>
                </div>
-               <div class="chat-app__sidebar">
-                    <UserSidebar CurrentChatUserVM="@SelectedChatUser" ChatMessages="@CurrentChatMessages" />
+               <div class="chat-app__sidebar @(IsSidebarActive ? "active-sidebar" : "")">
+                    <UserSidebar CurrentChatUserVM="@SelectedChatUser"
+                                 ChatMessages="@CurrentChatMessages"
+                                 OnBackClick="OnSidebarToggle" />
                </div>
           </div>
      </Authorized>

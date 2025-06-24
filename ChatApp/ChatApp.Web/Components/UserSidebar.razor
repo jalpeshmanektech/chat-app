@@ -3,6 +3,10 @@
 @using ChatApp.Web.ViewModels
 
 <div class="user-sidebar">
+
+     <div class="media-icon">
+          <img src="/images/icons/arrow-left-solid.svg" @onclick="() => OnBackClick.InvokeAsync(false)" />
+     </div>
      <div class="user-profile">
           <img src="@(CurrentChatUserVM?.AvatarUrl ?? "/images/no-profile.png")" alt="User avatar" />
           <div class="user-profile__name">@CurrentChatUserVM?.Name</div>
