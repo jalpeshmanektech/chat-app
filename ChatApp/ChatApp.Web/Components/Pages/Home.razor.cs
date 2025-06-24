@@ -13,7 +13,7 @@ namespace ChatApp.Web.Components.Pages
           [Inject] private UserManager<ApplicationUser> UserManager { get; set; } = default!;
           [Inject] private ApplicationDbContext DbContext { get; set; } = default!;
           [Inject] private ChatService ChatService { get; set; } = default!;
-
+          [Inject] private NavigationManager Navigation { get; set; } = default!;
           private string CurrentUser { get; set; } = null!;
           private string CurrentChatUser { get; set; } = null!;
           private List<ChatUserVM> ChatUsers { get; set; } = new();
@@ -26,15 +26,12 @@ namespace ChatApp.Web.Components.Pages
           {
                var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
                var user = authState.User;
-               if (user.Identity?.IsAuthenticated == true)
+               if (user.Identity?.IsAuthenticated != true)
                {
-                    CurrentUser = user.Identity.Name ?? "Unknown";
+                    Navigation.NavigateTo("/account/login", true);
+                    return;
                }
-               else
-               {
-                    CurrentUser = "Unknown";
-               }
-
+               CurrentUser = user.Identity.Name ?? "Unknown";
                var dbUsers = UserManager.Users.ToList();
                ChatUsers = new List<ChatUserVM>();
 
